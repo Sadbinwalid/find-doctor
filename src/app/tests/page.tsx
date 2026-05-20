@@ -25,7 +25,7 @@ export default function TestsPage() {
       <div className="border-b border-gray-100 bg-gradient-to-b from-purple-50 to-white">
         <div className="max-w-4xl mx-auto px-4 py-10">
           <nav className="text-xs text-gray-500 mb-4">
-            <Link href="/" className="hover:text-[#0066CC]">{t("Home", "হোম")}</Link>
+            <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
             {" / "}
             <span className="text-gray-900">{t("Diagnostic Tests", "ডায়াগনস্টিক পরীক্ষা")}</span>
           </nav>

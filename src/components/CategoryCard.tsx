@@ -2,9 +2,7 @@
 import Link from "next/link";
 import { Category } from "@/data/categories";
 import { useLanguage } from "@/context/LanguageContext";
-import {
-  Heart, Scan, Brain, Baby, Cross, Bone, Stethoscope, Ear, Eye, SmilePlus, Droplets, Activity,
-} from "lucide-react";
+import { ChevronRight, Heart, Scan, Brain, Baby, Cross, Bone, Stethoscope, Ear, Eye, SmilePlus, Droplets, Activity } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
   cardiologist: Heart,
@@ -28,26 +26,23 @@ export default function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/category/${category.slug}`}
-      className="group bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200"
+      className="group flex items-center gap-3 px-4 py-3 bg-white border border-gray-200 rounded-xl hover:border-[#C84B31] hover:bg-red-50/30 transition-all"
     >
-      {/* Icon */}
       <div
-        className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
+        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
         style={{ backgroundColor: category.bgColor }}
       >
-        <Icon size={20} style={{ color: category.color }} />
+        <Icon size={17} style={{ color: category.color }} />
       </div>
-
-      <h3 className="font-semibold text-gray-900 text-sm leading-tight">
-        {t(category.nameEn, category.nameBn)}
-      </h3>
-      <p className="text-xs text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
-        {t(category.descriptionEn, category.descriptionBn)}
-      </p>
-
-      <p className="text-xs mt-2 font-medium group-hover:underline" style={{ color: category.color }}>
-        {t("View doctors →", "ডাক্তার দেখুন →")}
-      </p>
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-gray-900 text-sm leading-tight group-hover:text-[#C84B31] transition-colors">
+          {t(category.nameEn, category.nameBn)}
+        </p>
+        <p className="text-xs text-gray-400 truncate mt-0.5">
+          {t(category.descriptionEn, category.descriptionBn)}
+        </p>
+      </div>
+      <ChevronRight size={14} className="text-gray-300 group-hover:text-[#C84B31] flex-shrink-0 transition-colors" />
     </Link>
   );
 }

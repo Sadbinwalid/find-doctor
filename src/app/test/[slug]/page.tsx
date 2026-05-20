@@ -22,9 +22,9 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
       <div className="border-b border-gray-100 bg-gradient-to-b from-purple-50 to-white">
         <div className="max-w-3xl mx-auto px-4 py-8">
           <nav className="text-xs text-gray-500 mb-4 flex items-center gap-1 flex-wrap">
-            <Link href="/" className="hover:text-[#0066CC]">{t("Home", "হোম")}</Link>
+            <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
             <ChevronRight size={12} />
-            <Link href="/tests" className="hover:text-[#0066CC]">{t("Tests", "পরীক্ষা")}</Link>
+            <Link href="/tests" className="hover:text-[#C84B31]">{t("Tests", "পরীক্ষা")}</Link>
             <ChevronRight size={12} />
             <span className="text-gray-900">{t(test.nameEn, test.nameBn)}</span>
           </nav>
@@ -57,7 +57,7 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
         </section>
 
         {/* Why it's done */}
-        <section className="border border-blue-100 bg-blue-50 rounded-xl p-5">
+        <section className="border border-red-100 bg-red-50/40 rounded-xl p-5">
           <h2 className="text-base font-bold text-gray-900 mb-2">{t("Why It's Done", "কেন করা হয়")}</h2>
           <p className="text-sm text-gray-700 leading-relaxed">{t(test.whyItsDoneEn, test.whyItsDoneBn)}</p>
         </section>
@@ -91,15 +91,15 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
                 <Link
                   key={disease.slug}
                   href={`/disease/${disease.slug}`}
-                  className="group flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 hover:border-[#0066CC] hover:bg-blue-50 transition-all"
+                  className="group flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 hover:border-[#C84B31] hover:bg-red-50 transition-all"
                 >
                   <div>
-                    <p className="font-medium text-sm text-gray-900 group-hover:text-[#0066CC] transition-colors">
+                    <p className="font-medium text-sm text-gray-900 group-hover:text-[#C84B31] transition-colors">
                       {t(disease.nameEn, disease.nameBn)}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">{t(disease.shortDescEn, disease.shortDescBn)}</p>
                   </div>
-                  <ChevronRight size={14} className="text-gray-300 group-hover:text-[#0066CC] flex-shrink-0 transition-colors" />
+                  <ChevronRight size={14} className="text-gray-300 group-hover:text-[#C84B31] flex-shrink-0 transition-colors" />
                 </Link>
               ))}
             </div>
@@ -107,7 +107,7 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
         )}
 
         <div className="text-center pt-2">
-          <Link href="/tests" className="text-sm text-[#0066CC] hover:underline">
+          <Link href="/tests" className="text-sm text-[#C84B31] hover:underline">
             ← {t("Back to all tests", "সব পরীক্ষায় ফিরে যান")}
           </Link>
         </div>

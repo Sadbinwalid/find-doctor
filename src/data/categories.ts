@@ -96,7 +96,7 @@ export const categories: Category[] = [
     descriptionBn: "কান, নাক ও গলা বিশেষজ্ঞ",
     whenToSeeEn: "Ear pain, hearing loss, sinus problems, sore throat, nosebleeds, or voice changes",
     whenToSeeBn: "কানে ব্যথা, শ্রবণশক্তি হ্রাস, সাইনাসের সমস্যা, গলা ব্যথা বা নাক দিয়ে রক্ত পড়া",
-    color: "#0066CC",
+    color: "#C84B31",
     bgColor: "#EFF6FF",
   },
   {

@@ -31,7 +31,7 @@ export default function DiseasesPage() {
       <div className="border-b border-gray-100 bg-gradient-to-b from-blue-50 to-white">
         <div className="max-w-6xl mx-auto px-4 py-10">
           <nav className="text-xs text-gray-500 mb-4">
-            <Link href="/" className="hover:text-[#0066CC]">{t("Home", "হোম")}</Link>
+            <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
             {" / "}
             <span className="text-gray-900">{t("Diseases & Conditions", "রোগ ও অবস্থা")}</span>
           </nav>
@@ -74,7 +74,7 @@ export default function DiseasesPage() {
                   <Link
                     key={slug}
                     href={`/disease/${slug}`}
-                    className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#0066CC] text-sm rounded-full transition-colors font-medium"
+                    className="px-4 py-2 bg-red-50/40 hover:bg-red-100 text-[#C84B31] text-sm rounded-full transition-colors font-medium"
                   >
                     {t(d.nameEn, d.nameBn)}
                   </Link>
@@ -92,7 +92,7 @@ export default function DiseasesPage() {
                 onClick={() => setActiveSystem("all")}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                   activeSystem === "all"
-                    ? "bg-[#0066CC] text-white"
+                    ? "bg-[#C84B31] text-white"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
@@ -104,7 +104,7 @@ export default function DiseasesPage() {
                   onClick={() => setActiveSystem(sys.key)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                     activeSystem === sys.key
-                      ? "bg-[#0066CC] text-white"
+                      ? "bg-[#C84B31] text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -132,18 +132,18 @@ export default function DiseasesPage() {
                 <Link
                   key={disease.slug}
                   href={`/disease/${disease.slug}`}
-                  className="group border border-gray-200 rounded-xl p-5 hover:border-[#0066CC] hover:shadow-sm transition-all bg-white"
+                  className="group border border-gray-200 rounded-xl p-5 hover:border-[#C84B31] hover:shadow-sm transition-all bg-white"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-[#0066CC] transition-colors">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-[#C84B31] transition-colors">
                         {t(disease.nameEn, disease.nameBn)}
                       </h3>
                       <p className="text-xs text-gray-400 mt-0.5">
                         {t(disease.nameEn === disease.nameBn ? "" : disease.nameBn, disease.nameEn)}
                       </p>
                     </div>
-                    <ChevronRight size={16} className="text-gray-300 group-hover:text-[#0066CC] flex-shrink-0 mt-1 transition-colors" />
+                    <ChevronRight size={16} className="text-gray-300 group-hover:text-[#C84B31] flex-shrink-0 mt-1 transition-colors" />
                   </div>
                   <p className="text-sm text-gray-500 mt-2 line-clamp-2">
                     {t(disease.shortDescEn, disease.shortDescBn)}

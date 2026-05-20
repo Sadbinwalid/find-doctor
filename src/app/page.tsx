@@ -1,11 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, MapPin, ChevronDown } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { categories } from "@/data/categories";
 import { doctors } from "@/data/doctors";
-import { locations } from "@/data/locations";
 import { diseases } from "@/data/diseases";
 import CategoryCard from "@/components/CategoryCard";
 import DoctorCard from "@/components/DoctorCard";
@@ -13,120 +12,63 @@ import DoctorCard from "@/components/DoctorCard";
 export default function HomePage() {
   const { t } = useLanguage();
   const router = useRouter();
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDivision, setSelectedDivision] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-
-  const divisions = locations.map((l) => ({ value: l.division, label: `${l.division} / ${l.divisionBn}` }));
-  const districts = selectedDivision
-    ? locations.find((l) => l.division === selectedDivision)?.districts.map((d) => ({ value: d.name, label: `${d.name} / ${d.nameBn}` })) ?? []
-    : [];
 
   const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set("q", searchQuery);
-    if (selectedDivision) params.set("division", selectedDivision);
-    if (selectedDistrict) params.set("district", selectedDistrict);
-    router.push(`/doctors?${params.toString()}`);
+    if (searchQuery.trim()) router.push(`/doctors?q=${encodeURIComponent(searchQuery)}`);
+    else router.push("/doctors");
   };
 
   const featuredDoctors = doctors.filter((d) => d.available).slice(0, 6);
+  const topDiseases = ["diabetes", "hypertension", "dengue", "typhoid", "gastric", "heart-disease", "asthma", "child-fever"];
 
   return (
-    <div className="bg-white">
+    <div className="bg-white min-h-screen">
       {/* Hero */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-14 md:py-20">
-          <div className="max-w-2xl mx-auto text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-blue-50 text-[#0066CC] text-xs font-medium px-3 py-1.5 rounded-full mb-4">
-              <span className="w-1.5 h-1.5 bg-[#0066CC] rounded-full" />
-              {t("1,200+ Verified Doctors", "১,২০০+ যাচাইকৃত ডাক্তার")}
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
-              {t("Find the right doctor,", "সঠিক ডাক্তার খুঁজুন,")}
-              <br />
-              <span className="text-[#0066CC]">{t("near you", "আপনার কাছে")}</span>
-            </h1>
-            <p className="text-gray-500 text-base">
-              {t(
-                "Search across all 8 divisions of Bangladesh by specialty, location, and fee",
-                "বিশেষজ্ঞতা, অবস্থান ও ফি অনুযায়ী বাংলাদেশের সব ৮টি বিভাগে অনুসন্ধান করুন"
-              )}
-            </p>
-          </div>
-
-          {/* Search Box */}
-          <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-sm p-3 flex flex-col md:flex-row gap-2">
-            <div className="flex-1 flex items-center gap-2 px-3 py-2">
-              <Search size={18} className="text-gray-400 flex-shrink-0" />
-              <input
-                type="text"
-                placeholder={t("Doctor name, specialty, or condition...", "ডাক্তারের নাম, বিশেষজ্ঞতা বা রোগের নাম...")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="flex-1 text-sm outline-none text-gray-900 placeholder-gray-400 bg-transparent"
-              />
-            </div>
-
-            <div className="hidden md:block w-px bg-gray-200 my-1" />
-
-            <div className="flex items-center gap-2 px-3 py-2 relative">
-              <MapPin size={16} className="text-gray-400 flex-shrink-0" />
-              <select
-                value={selectedDivision}
-                onChange={(e) => { setSelectedDivision(e.target.value); setSelectedDistrict(""); }}
-                className="text-sm text-gray-700 outline-none bg-transparent appearance-none pr-5 cursor-pointer"
-              >
-                <option value="">{t("All Divisions", "সব বিভাগ")}</option>
-                {divisions.map((d) => (
-                  <option key={d.value} value={d.value}>{d.label}</option>
-                ))}
-              </select>
-              <ChevronDown size={14} className="text-gray-400 absolute right-3 pointer-events-none" />
-            </div>
-
-            {selectedDivision && (
-              <>
-                <div className="hidden md:block w-px bg-gray-200 my-1" />
-                <div className="flex items-center gap-2 px-3 py-2 relative">
-                  <select
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    className="text-sm text-gray-700 outline-none bg-transparent appearance-none pr-5 cursor-pointer"
-                  >
-                    <option value="">{t("All Districts", "সব জেলা")}</option>
-                    {districts.map((d) => (
-                      <option key={d.value} value={d.value}>{d.label}</option>
-                    ))}
-                  </select>
-                  <ChevronDown size={14} className="text-gray-400 absolute right-3 pointer-events-none" />
-                </div>
-              </>
+      <section className="border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 py-14 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
+            {t("Find the right doctor", "সঠিক ডাক্তার খুঁজুন")}
+            <br />
+            <span className="text-[#C84B31]">{t("in Bangladesh", "বাংলাদেশে")}</span>
+          </h1>
+          <p className="text-gray-500 text-sm mb-8">
+            {t(
+              "Search by doctor name, specialty, disease, or location to find and contact a doctor directly.",
+              "ডাক্তারের নাম, বিশেষজ্ঞতা, রোগ বা অবস্থান দিয়ে খুঁজুন এবং সরাসরি যোগাযোগ করুন।"
             )}
+          </p>
 
-            <button
-              onClick={handleSearch}
-              className="bg-[#0066CC] text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors flex-shrink-0"
-            >
-              {t("Search", "খুঁজুন")}
-            </button>
+          {/* Search */}
+          <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-4 py-3 bg-white shadow-sm max-w-xl mx-auto">
+            <Search size={16} className="text-gray-400 flex-shrink-0" />
+            <input
+              type="text"
+              placeholder={t(
+                "Doctor name, specialty, disease…",
+                "ডাক্তারের নাম, বিশেষজ্ঞতা, রোগ…"
+              )}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className="flex-1 text-sm outline-none bg-transparent text-gray-900 placeholder-gray-400"
+            />
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs text-gray-400 border border-gray-200 rounded">/</kbd>
           </div>
 
-          {/* Quick tags */}
-          <div className="max-w-3xl mx-auto mt-4 flex flex-wrap gap-2 justify-center">
+          {/* Quick specialty chips */}
+          <div className="mt-4 flex flex-wrap gap-2 justify-center">
             {[
-              { en: "Heart Doctor", bn: "হৃদরোগ বিশেষজ্ঞ", slug: "cardiologist" },
+              { en: "Heart Doctor", bn: "হৃদরোগ", slug: "cardiologist" },
               { en: "Child Specialist", bn: "শিশু বিশেষজ্ঞ", slug: "pediatrician" },
-              { en: "Skin Doctor", bn: "চর্মরোগ বিশেষজ্ঞ", slug: "dermatologist" },
+              { en: "Skin Doctor", bn: "চর্মরোগ", slug: "dermatologist" },
               { en: "Eye Doctor", bn: "চক্ষু বিশেষজ্ঞ", slug: "ophthalmologist" },
               { en: "General Physician", bn: "সাধারণ চিকিৎসক", slug: "general-physician" },
             ].map((tag) => (
               <button
                 key={tag.slug}
                 onClick={() => router.push(`/category/${tag.slug}`)}
-                className="text-xs px-3 py-1 bg-gray-100 hover:bg-blue-50 hover:text-[#0066CC] text-gray-600 rounded-full transition-colors"
+                className="text-xs px-3 py-1.5 border border-gray-200 rounded-full text-gray-600 hover:border-[#C84B31] hover:text-[#C84B31] transition-colors"
               >
                 {t(tag.en, tag.bn)}
               </button>
@@ -135,156 +77,112 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section className="border-b border-gray-100 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats */}
+      <section className="border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 py-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { en: "Verified Doctors", bn: "যাচাইকৃত ডাক্তার", value: "1,200+" },
-            { en: "Specialties", bn: "বিশেষজ্ঞতা", value: "40+" },
-            { en: "Divisions Covered", bn: "বিভাগ অন্তর্ভুক্ত", value: "8" },
-            { en: "Districts", bn: "জেলা", value: "64" },
-          ].map((stat) => (
-            <div key={stat.en} className="text-center">
-              <p className="text-2xl font-bold text-[#0066CC]">{stat.value}</p>
+            { value: "1,200+", en: "Verified Doctors", bn: "যাচাইকৃত ডাক্তার" },
+            { value: "40+", en: "Specialties", bn: "বিশেষজ্ঞতা" },
+            { value: "8", en: "Divisions", bn: "বিভাগ" },
+            { value: "64", en: "Districts", bn: "জেলা" },
+          ].map((stat, i) => (
+            <div key={i} className="border border-gray-200 rounded-xl px-4 py-4 text-center">
+              <p className={`text-2xl font-bold ${i === 1 ? "text-[#C84B31]" : "text-gray-900"}`}>
+                {stat.value}
+              </p>
               <p className="text-xs text-gray-500 mt-0.5">{t(stat.en, stat.bn)}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Disease Explorer */}
-      <section className="max-w-6xl mx-auto px-4 py-12 border-b border-gray-100">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">{t("Search by Disease or Symptom", "রোগ বা লক্ষণ দিয়ে খুঁজুন")}</h2>
-            <p className="text-sm text-gray-500 mt-0.5">{t("Don't know the specialty? Start with your condition.", "বিশেষজ্ঞতা জানেন না? রোগ দিয়ে শুরু করুন।")}</p>
+      {/* Browse by Disease */}
+      <section className="border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-base font-bold text-gray-900">
+                {t("Browse by Disease", "রোগ অনুযায়ী খুঁজুন")}
+              </h2>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {t("Don't know the specialty? Start with your condition.", "বিশেষজ্ঞতা জানেন না? রোগ দিয়ে শুরু করুন।")}
+              </p>
+            </div>
+            <a href="/diseases" className="flex items-center gap-1 text-xs text-[#C84B31] hover:underline font-medium">
+              {t("View all", "সব দেখুন")} <ChevronRight size={12} />
+            </a>
           </div>
-          <a href="/diseases" className="text-sm text-[#0066CC] hover:underline hidden md:block">
-            {t("View all →", "সব দেখুন →")}
-          </a>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {["diabetes", "hypertension", "dengue", "typhoid", "gastric", "asthma", "kidney-disease", "heart-disease", "skin-allergy", "child-fever"].map((slug) => {
-            const d = diseases.find((x) => x.slug === slug);
-            if (!d) return null;
-            return (
-              <a
-                key={slug}
-                href={`/disease/${slug}`}
-                className="group border border-gray-200 rounded-xl p-4 hover:border-[#0066CC] hover:bg-blue-50 transition-all text-center"
-              >
-                <p className="font-semibold text-sm text-gray-900 group-hover:text-[#0066CC] transition-colors leading-tight">
+
+          <div className="flex flex-wrap gap-2">
+            {topDiseases.map((slug) => {
+              const d = diseases.find((x) => x.slug === slug);
+              if (!d) return null;
+              return (
+                <a
+                  key={slug}
+                  href={`/disease/${slug}`}
+                  className="px-3 py-1.5 border border-gray-200 rounded-full text-sm text-gray-700 hover:border-[#C84B31] hover:text-[#C84B31] transition-colors"
+                >
                   {t(d.nameEn, d.nameBn)}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">{d.linkedSpecialties.length} {t("specialist(s)", "বিশেষজ্ঞ")}</p>
-              </a>
-            );
-          })}
+                </a>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">{t("Browse by Specialty", "বিশেষজ্ঞতা অনুযায়ী খুঁজুন")}</h2>
-            <p className="text-sm text-gray-500 mt-0.5">{t("Find the right specialist for your condition", "আপনার রোগের জন্য সঠিক বিশেষজ্ঞ খুঁজুন")}</p>
+      {/* Specialties */}
+      <section className="border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-base font-bold text-gray-900">{t("Browse by Specialty", "বিশেষজ্ঞতা অনুযায়ী")}</h2>
+              <p className="text-xs text-gray-400 mt-0.5">{t("Find the right specialist for your condition", "আপনার রোগের সঠিক বিশেষজ্ঞ")}</p>
+            </div>
+            <a href="/specialties" className="flex items-center gap-1 text-xs text-[#C84B31] hover:underline font-medium">
+              {t("View all", "সব দেখুন")} <ChevronRight size={12} />
+            </a>
           </div>
-          <a href="/specialties" className="text-sm text-[#0066CC] hover:underline hidden md:block">
-            {t("View all →", "সব দেখুন →")}
-          </a>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.slug} category={cat} />
-          ))}
+          <div className="flex flex-col gap-2">
+            {categories.slice(0, 8).map((cat) => (
+              <CategoryCard key={cat.slug} category={cat} />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Featured Doctors */}
-      <section className="bg-gray-50 border-t border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="flex items-center justify-between mb-6">
+      <section className="border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">{t("Featured Doctors", "বিশিষ্ট ডাক্তার")}</h2>
-              <p className="text-sm text-gray-500 mt-0.5">{t("Top-rated doctors currently available", "সর্বোচ্চ রেটেড ডাক্তার যারা এখন উপলব্ধ")}</p>
+              <h2 className="text-base font-bold text-gray-900">{t("Available Doctors", "উপলব্ধ ডাক্তার")}</h2>
+              <p className="text-xs text-gray-400 mt-0.5">{t("Top-rated doctors available now", "এখন উপলব্ধ শীর্ষ রেটেড ডাক্তার")}</p>
             </div>
-            <a href="/doctors" className="text-sm text-[#0066CC] hover:underline hidden md:block">
-              {t("View all doctors →", "সব ডাক্তার দেখুন →")}
+            <a href="/doctors" className="flex items-center gap-1 text-xs text-[#C84B31] hover:underline font-medium">
+              {t("View all", "সব দেখুন")} <ChevronRight size={12} />
             </a>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex flex-col gap-2">
             {featuredDoctors.map((doctor) => (
               <DoctorCard key={doctor.id} doctor={doctor} />
             ))}
           </div>
-          <div className="mt-6 text-center md:hidden">
-            <a
-              href="/doctors"
-              className="inline-block px-6 py-2.5 border border-[#0066CC] text-[#0066CC] text-sm font-medium rounded-lg hover:bg-[#0066CC] hover:text-white transition-colors"
-            >
-              {t("View all doctors", "সব ডাক্তার দেখুন")}
-            </a>
-          </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-xl font-bold text-gray-900 text-center mb-8">
-          {t("How to find your doctor", "কীভাবে আপনার ডাক্তার খুঁজবেন")}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              step: "1",
-              en: "Choose your specialty",
-              bn: "আপনার বিশেষজ্ঞতা বেছে নিন",
-              descEn: "Select from 40+ medical specialties based on your health condition",
-              descBn: "আপনার স্বাস্থ্য অবস্থার উপর ভিত্তি করে ৪০+ চিকিৎসা বিশেষজ্ঞতা থেকে বেছে নিন",
-            },
-            {
-              step: "2",
-              en: "Filter by location",
-              bn: "অবস্থান দিয়ে ফিল্টার করুন",
-              descEn: "Narrow down by division, district, and upazila to find nearby doctors",
-              descBn: "কাছের ডাক্তার খুঁজতে বিভাগ, জেলা ও উপজেলা দিয়ে সংকুচিত করুন",
-            },
-            {
-              step: "3",
-              en: "View profile & contact",
-              bn: "প্রোফাইল দেখুন এবং যোগাযোগ করুন",
-              descEn: "Check qualifications, fees, and contact the doctor directly",
-              descBn: "যোগ্যতা, ফি দেখুন এবং সরাসরি ডাক্তারের সাথে যোগাযোগ করুন",
-            },
-          ].map((item) => (
-            <div key={item.step} className="flex gap-4 items-start">
-              <div className="w-9 h-9 rounded-full bg-[#0066CC] text-white font-bold text-sm flex items-center justify-center flex-shrink-0">
-                {item.step}
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 text-sm">{t(item.en, item.bn)}</h3>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">{t(item.descEn, item.descBn)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Emergency Banner */}
-      <section className="bg-red-50 border-t border-red-100">
-        <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
+      {/* Emergency */}
+      <section>
+        <div className="max-w-2xl mx-auto px-4 py-6 flex items-center justify-between gap-4">
           <div>
-            <p className="font-semibold text-red-800 text-sm">
-              {t("Medical Emergency?", "চিকিৎসা জরুরি?")}
-            </p>
-            <p className="text-xs text-red-600 mt-0.5">
-              {t("For emergencies, call the national health helpline immediately", "জরুরি অবস্থায়, অবিলম্বে জাতীয় স্বাস্থ্য হেল্পলাইনে কল করুন")}
+            <p className="font-semibold text-gray-900 text-sm">{t("Medical Emergency?", "চিকিৎসা জরুরি?")}</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {t("Call the national health helpline immediately", "অবিলম্বে জাতীয় স্বাস্থ্য হেল্পলাইনে কল করুন")}
             </p>
           </div>
           <a
             href="tel:16457"
-            className="bg-red-600 text-white font-bold text-lg px-6 py-2 rounded-lg hover:bg-red-700 transition-colors flex-shrink-0"
+            className="bg-[#C84B31] text-white font-bold text-lg px-6 py-2 rounded-lg hover:bg-[#b03e27] transition-colors flex-shrink-0"
           >
             16457
           </a>
