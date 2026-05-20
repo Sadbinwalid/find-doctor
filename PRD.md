@@ -1,441 +1,470 @@
-# Product Requirements Document: DoctorBD — Doctor Finder Bangladesh
+# DoctorBD — Product Requirements Document
 
-**Version:** 3.0
+**Version:** 4.0 (Definitive)
 **Date:** 2026-05-20
 **Branch:** `doctor-site`
 **Status:** Active Development
 
 ---
 
-## 1. Overview
+## 1. Product Overview
 
-DoctorBD is a community-driven, bilingual (Bengali/English) doctor discovery platform for Bangladesh. The core job-to-be-done: a person needs to reach a doctor — the app surfaces the phone number and chamber details so they can call and arrange an appointment themselves.
+DoctorBD is a bilingual (Bengali/English), community-driven doctor discovery platform for Bangladesh. The platform solves a simple but critical problem: when someone is unwell, they need to reach the right doctor fast — their phone number, their chamber address, their visiting hours.
 
-No booking engine. No payment. Just fast, reliable contact info.
+No appointment booking engine. No payment. No telemedicine. Just fast, reliable, trusted information so the user can pick up the phone and call.
+
+### Core Job-to-Be-Done
+
+> A person in Bangladesh feels unwell. They need to know: which type of doctor do I see, where are they, and how do I call them?
+
+The platform answers all three in under 30 seconds.
 
 ---
 
-## 2. Goals
+## 2. Goals & Non-Goals
 
-- Build a searchable, open database of doctors in Bangladesh organized by specialty
-- Allow anyone to contribute doctor information; submissions go live only after admin approval
-- Surface actionable contact info (phone, chamber address, visiting hours) quickly
-- Start with Dhaka; schema and structure supports all 64 districts from day one
+### Goals
+- Build a searchable, open database of doctors in Bangladesh organised by specialty
+- Let users discover doctors by disease or symptom — not just specialty
+- Surface actionable contact info (phone, chamber address, visiting hours) immediately
+- Allow anyone to contribute and suggest doctor information; admin approves before it goes live
+- Support all 64 districts of Bangladesh from day one; initial focus on Dhaka
+- Provide bilingual (Bengali + English) experience throughout
 
-**Non-goals (v1):**
+### Non-Goals (v1)
 - In-app appointment booking
 - Payment processing
 - Telemedicine / video consultations
+- Automated BMDC registry integration
+- Prescription or medical record management
 
 ---
 
 ## 3. User Types & Permissions
 
-| Type | Browse | Search | Submit / Edit | Verified Badge | Moderate |
-|---|---|---|---|---|---|
-| **Visitor** | Yes | Yes | No | — | — |
-| **Contributor** | Yes | Yes | Yes (pending approval) | — | — |
-| **Doctor** | Yes | Yes | Yes — own profile only (pending approval) | Yes (after doc review) | — |
-| **Admin** | Yes | Yes | Yes — all profiles | — | Full |
+| Role | Browse & Search | Submit / Edit Info | Verified Badge | Moderation |
+|---|---|---|---|---|
+| **Visitor** | ✓ | — | — | — |
+| **Contributor** | ✓ | ✓ (pending approval) | — | — |
+| **Doctor** | ✓ | ✓ own profile only (pending approval) | ✓ after doc review | — |
+| **Admin** | ✓ | ✓ all profiles | — | Full |
 
 ---
 
-## 4. Feature Specifications
+## 4. Features
 
-### 4.1 Specialty Taxonomy
+### 4.1 Doctor Search & Discovery
 
-**Description:** A two-level hierarchy organising all medical specialties. Users browse from the homepage by clicking a specialty card rather than searching blind.
+The primary entry point for users who already know what kind of doctor they need.
 
-**Structure:**
-```
-Parent Category (e.g. Medicine)
-  └── Sub-specialty (e.g. Cardiology, Neurology)
+**Search bar (homepage + persistent in header):**
+- Full-text search across doctor name, specialty, hospital name, chamber area, district
+- Bilingual — works in Bengali or English input
+- Search results routed to `/doctors?q=…`
 
-Parent Category (e.g. Surgery)
-  └── Sub-specialty (e.g. Orthopedics, Neurosurgery)
-```
+**Filters on results page:**
+- Specialty (multi-select checkboxes)
+- Division (dropdown — all 8 divisions)
+- District (dropdown — updates based on selected division)
+- Sort by: rating, experience
 
-**Rules:**
-- Every category has a name in both Bengali and English
-- A doctor belongs to exactly one sub-specialty
-- Category pages list all approved doctors in that specialty, paginated (20 per page)
-- Admin creates, edits, or removes categories via the admin panel
-- Deleting a category requires reassigning or removing its doctors first
+**Results list:**
+- Each result is a list-row card: initials avatar · doctor name · specialty + hospital · location, rating, experience · chevron
+- Clicking a row opens the doctor profile page
 
-**Initial Specialties (launch set):**
-Cardiology, Dermatology, Neurology, Pediatrics, Gynecology & Obstetrics, Orthopedics, Gastroenterology, ENT, Ophthalmology, Psychiatry, Nephrology, General Medicine, Oncology, Urology, Endocrinology, Pulmonology, Rheumatology, Dentistry, Radiology, Pathology
+**Specialty browse:**
+- Grid of specialty cards on homepage and `/specialties` — icon · name · description
+- Clicking opens the specialty's category page (`/category/[slug]`)
+- Category page shows all approved doctors in that specialty with same filter options
 
 ---
 
 ### 4.2 Doctor Profile
 
-**Description:** The core unit of the app. Every piece of info on a profile is either required for the profile to be approved or optional but structured.
+The core unit of the platform. Every profile must have enough information to let the user make a call.
 
-| Field | Required | Format / Notes |
+| Field | Required | Notes |
 |---|---|---|
-| Full name (English) | Yes | Plain text |
-| Full name (Bengali) | Yes | Unicode Bengali |
-| Title / degrees | Yes | e.g. MBBS, FCPS, MD — comma-separated |
-| Profile photo | No | JPEG/PNG, max 2 MB, displayed as circular avatar |
+| Full name — English | Yes | |
+| Full name — Bengali | Yes | Unicode Bengali |
+| Title / degrees | Yes | MBBS, FCPS, MD, etc. |
+| Profile photo | No | Circular avatar; initials shown as fallback |
 | Specialty | Yes | Linked to taxonomy category |
-| Affiliated hospital(s) | No | Multiple entries; name + address each |
-| Chamber address(es) | No | Multiple entries; each has: address, days open, visiting hours |
-| Phone number(s) | Yes | At least one; labelled (chamber / personal / appointment) |
-| Division | Yes | One of 8 divisions |
-| District | Yes | One of 64 districts |
-| BMDC registration no. | No | Displayed on profile if provided; not validated automatically in v1 |
-| Languages spoken | No | e.g. Bengali, English, Arabic |
-| About / bio | No | Short free-text, max 300 characters |
+| Qualifications list | Yes | Array of degree strings |
+| Affiliated hospital(s) | No | Primary display hospital shown on card |
+| Chamber address(es) | No | Multiple; each with visiting hours |
+| Contact phone number(s) | Yes | Tap-to-call on mobile; primary reason users visit |
+| Division | Yes | One of 8 |
+| District | Yes | One of 64 |
+| BMDC registration no. | No | Shown if provided; not auto-validated in v1 |
+| Experience (years) | No | |
+| Rating / review count | No | Seeded initially; user reviews in v2 |
+| Availability flag | No | Available / Unavailable |
+| About / bio | No | Max 300 characters |
+| When to see this doctor | No | Bullet list — conditions this specialty treats |
 
-> **Fee information is intentionally excluded** — fees change frequently and disputes over outdated data damage trust.
+> **Fee information is excluded** — fees change frequently and outdated data damages trust.
 
-**Profile states:** `pending` → `approved` → `published` | `rejected` | `flagged`
+**Profile states:** `pending → approved → published` | `rejected` | `flagged`
 
----
-
-### 4.3 Search & Discovery
-
-**Description:** The primary way users find a doctor. Must return results in under 1 second on a 3G connection.
-
-**Search bar (homepage + persistent header):**
-- Full-text search across: doctor name, specialty name, hospital name, chamber area
-- Bilingual — typing in Bengali or English both work
-- Autocomplete suggestions appear after 2 characters (debounced 300 ms)
-- Search results page shows matched doctors with: name, specialty, primary phone, district
-
-**Filters (search results page):**
-- Specialty (dropdown — full taxonomy list)
-- Division (dropdown)
-- District (dropdown — updates based on selected division)
-- Verified only (toggle)
-
-**Browse by Specialty (homepage):**
-- Grid of specialty cards — icon, Bengali name, English name, doctor count
-- Clicking a card goes to the specialty's category page
-- Category page supports the same division/district filters
-
-**Result card (what's shown per doctor in a list):**
-- Name (English + Bengali)
-- Specialty
-- Primary contact phone (tap-to-call on mobile)
-- Chamber area / district
-- Verified badge (if applicable)
-- Rating (if reviews are enabled — v2)
+**Profile page sections:**
+1. Header — name, degrees, specialty badge, verified badge (if applicable), availability
+2. About
+3. Qualifications
+4. Hospital & chamber details with visiting hours
+5. Contact — phone number(s) with tap-to-call
+6. When to see this doctor (condition list)
+7. Location map link (Google Maps deep-link)
 
 ---
 
-### 4.4 Submitting & Editing Doctor Information
+### 4.3 Specialty Taxonomy
 
-**Description:** Any logged-in user can add a doctor or suggest edits. Nothing is visible to visitors until an admin approves.
+Two-level hierarchy. Every doctor belongs to one leaf-level specialty.
+
+```
+Parent (e.g. Medicine)
+  └── Sub-specialty (e.g. Cardiology, Neurology)
+```
+
+**Launch specialties (12):**
+Cardiologist, Dermatologist, Neurologist, Pediatrician, Gynecologist, Orthopedic, Gastroenterologist, ENT Specialist, Ophthalmologist, Psychiatrist, Nephrologist, General Physician
+
+**Rules:**
+- Every specialty has a name in Bengali and English
+- Category pages list all approved doctors with district/division filters
+- Admin manages the category tree via the admin panel
+- Deleting a category requires reassigning its doctors first
+
+---
+
+### 4.4 Disease Explorer
+
+The secondary entry point — for users who know their symptom or disease but not the specialty. This is the differentiating feature of DoctorBD versus a simple doctor directory.
+
+#### 4.4.1 Disease Pages
+
+Each disease has a standalone, bilingual page at `/disease/[slug]`.
+
+| Field | Required | Notes |
+|---|---|---|
+| Name — English & Bengali | Yes | Including common/local aliases |
+| Body system | Yes | Used for browse grouping |
+| Short description | Yes | 1–2 sentences, plain language |
+| Overview | Yes | What it is, prevalence in Bangladesh |
+| Symptoms | Yes | Bilingual bullet list |
+| Causes & risk factors | Yes | Bilingual bullet list |
+| When to see a doctor | Yes | Specific, actionable triggers |
+| Linked specialties | Yes | Which specialty types treat this disease |
+| Linked diagnostic tests | Yes | Which tests are typically ordered |
+| Related diseases | No | Cross-links to similar conditions |
+| Disclaimer | Required on every page | "General information only — consult a doctor" |
+
+**Content is admin-managed.** Contributors can suggest edits; same pending queue as doctor profiles.
+
+**Launch diseases (10):**
+Diabetes, High Blood Pressure, Dengue Fever, Typhoid, Gastric / Peptic Ulcer, Asthma, Kidney Disease, Skin Allergy & Eczema, Heart Disease, Fever in Children
+
+#### 4.4.2 Browse Diseases
+
+**Entry points:**
+- Homepage chip section — "Browse by Disease" with the 8 most-searched conditions as pill chips
+- `/diseases` page — full list with search and body-system filter tabs
+
+**Body systems (10 categories):**
+Heart & Blood, Digestive, Endocrine & Hormones, Respiratory, Kidney & Urinary, Skin, Brain & Nerves, Child Health, Infectious Disease, Eyes
+
+**Search on `/diseases`:**
+- Matches disease name (EN + BN), common/alias names, and symptoms
+- Results update live as user types
+
+#### 4.4.3 Diagnostic Tests Directory
+
+Each test has a page at `/test/[slug]`.
+
+| Field | Required | Notes |
+|---|---|---|
+| Name — English & Bengali | Yes | |
+| Common aliases | No | e.g. "Sugar test" for FBS |
+| What it measures | Yes | Plain language |
+| Why it's done | Yes | Clinical indication |
+| How to prepare | Yes | Fasting instructions, medication holds |
+| Where to get it | Yes | Facility type required |
+| Linked diseases | Yes | Which conditions use this test |
+
+**Launch tests (14):**
+CBC, Fasting Blood Sugar, HbA1c, Dengue NS1, Platelet Count, Widal Test, Blood Culture, Kidney Function Test, Urine Routine, ECG, Lipid Profile, Chest X-Ray, H. pylori Test, Allergy Test (IgE)
+
+#### 4.4.4 Disease → Doctor Discovery Flow
+
+The end-to-end user journey:
+
+```
+Homepage
+  → "Browse by Disease" section  OR  search bar
+  → Disease page
+      · Read: overview, symptoms, when to see a doctor
+      · See: "Tests You May Need" → tap any test for prep info
+      · See: "Find a Doctor for this Condition"
+          · Lists linked specialties with doctor count
+          · Tap specialty → doctor list (pre-filtered)
+  → Doctor profile
+      · Tap phone number → call
+```
+
+---
+
+### 4.5 Submitting & Editing Doctor Information
 
 **Adding a new doctor:**
-1. User clicks "Add Doctor" (visible when logged in)
-2. Fills out the profile form (see 4.2 field list)
-3. Submits — profile enters `pending` queue
-4. Admin reviews and approves, rejects (with a note), or requests more info
-5. On approval the profile goes live
+1. Logged-in user clicks "Add Doctor"
+2. Fills profile form and submits
+3. Profile enters `pending` queue
+4. Admin approves, rejects (with note), or requests more info
+5. On approval the profile is published
 
-**Suggesting an edit to an existing profile:**
-1. User clicks "Suggest Edit" on any published profile
-2. A pre-filled form opens with current data
-3. User changes one or more fields and submits
-4. The edit enters the `pending` queue as a diff (old value → new value)
-5. Admin sees both versions side-by-side and approves or rejects
+**Suggesting an edit:**
+1. Any logged-in user clicks "Suggest Edit" on a published profile
+2. Pre-filled form — user changes one or more fields
+3. Submitted as a diff (old value → proposed value)
+4. Admin reviews side-by-side and approves or rejects
 
 **Edit history:**
-- Every approved change is logged: who submitted, what changed, when, admin who approved
-- History is visible to admins; a simplified version ("last updated on…") is visible to the public
+- Every approved change logged: who submitted, what changed, when, which admin approved
+- Public: "last updated on…"
+- Admin: full field-level diff history
 
-**Flagging incorrect info:**
-- Any visitor can click "Flag" on a profile without logging in
-- Flag form: select reason (wrong phone / wrong address / doctor no longer at this chamber / other) + optional note
-- Flagged profiles appear in the admin dashboard for review
-- A profile with 3+ unresolved flags is automatically surfaced at the top of the admin queue
+**Flagging:**
+- Any visitor can flag a profile (no login required)
+- Flag reasons: wrong phone / wrong address / doctor no longer at chamber / other
+- 3+ unresolved flags auto-surface the profile at top of admin queue
 
 ---
 
-### 4.5 Doctor Self-Registration & Verified Badge
+### 4.6 Doctor Self-Registration & Verified Badge
 
-**Description:** Doctors can claim their own profile and earn a visible "Verified Doctor" badge, which boosts trust with visitors.
-
-**Flow:**
-1. Doctor creates an account (email or phone number)
-2. Searches for their existing profile — if found, clicks "Claim this profile"
-3. If no profile exists, creates one from scratch
-4. Uploads verification documents (at least one required):
+1. Doctor creates account (email or phone + OTP)
+2. Searches for existing profile → clicks "Claim this profile" OR creates new
+3. Uploads verification documents (at least one):
    - BMDC registration certificate
    - Medical degree certificate
    - Hospital ID card or visiting card
-5. Submission enters admin review queue tagged as "Verification Request"
-6. Admin reviews documents and either grants or denies verified status with a note
-7. Verified doctors receive an email/SMS confirmation and a badge appears on their profile
+4. Submission enters "Verification Request" queue in admin panel
+5. Admin reviews documents, grants or denies badge
+6. Verified doctors can edit their own profile (edits still go through approval queue)
 
-**After verification:**
-- Doctor can edit their own profile at any time (edits still go through the approval queue)
-- Doctor cannot edit other profiles
+**Verified badge** appears prominently on profile and in search result rows.
 
 ---
 
-### 4.6 User Accounts & Authentication
+### 4.7 User Accounts & Authentication
 
 **Registration options:**
-- Email + password
-- Phone number + OTP (SMS) — preferred for Bangladesh market
+- Phone number + OTP (SMS) — preferred; Bangladesh market is mobile-first
+- Email + password — secondary option
 
-**Account fields:**
-- Name
-- Email or phone (at least one required)
-- Role (auto-assigned: Contributor; self-identified: Doctor triggers verification flow)
+**Account fields:** name, phone/email, role
 
-**Session:** JWT-based, 30-day expiry with refresh token
+**Role assignment:**
+- Default: Contributor
+- Doctor: self-selected at registration; triggers verification flow
 
-**Password reset:** via email link or SMS OTP
+**Session:** JWT, 30-day expiry with refresh token
+
+**Password / PIN reset:** via SMS OTP or email link
 
 ---
 
-### 4.7 Admin Panel
+### 4.8 Admin Panel
 
-**Description:** A separate, protected interface for admins to manage all content and users. Accessible only to accounts with the Admin role.
+Protected at `/admin`. Accessible only to Admin-role accounts.
 
-**Dashboard (landing page):**
+**Dashboard:**
 - Count cards: pending submissions, pending verifications, flagged profiles, total published doctors
-- Activity feed: recent approvals/rejections by any admin
+- Recent activity feed
 
 **Pending Submissions Queue:**
-- List of all pending new profiles and edits, oldest first
-- Each row: submitter name, doctor name, submission type (new / edit), date
-- Click to open review view — shows diff for edits, full form for new profiles
+- List: submitter, doctor name, type (new profile / edit), date submitted
+- Review view: diff for edits (old → proposed), full form for new profiles
 - Actions: Approve / Reject (with required note) / Request more info
 
 **Verification Requests:**
-- List of doctors awaiting badge approval
-- Admin can view uploaded documents inline
-- Actions: Grant badge / Deny (with note)
+- View uploaded documents inline
+- Actions: Grant verified badge / Deny (with note)
 
 **Flagged Profiles:**
-- Sorted by flag count (highest first)
-- Admin can resolve flags, edit the profile, or reject as unfounded
+- Sorted by flag count
+- Actions: resolve flags, edit profile, dismiss flags as unfounded
 
 **Category Management:**
-- Add / edit / delete specialty categories
-- Reorder display order on homepage grid
+- Add / edit / reorder / delete specialty categories
+- Reassign doctors before deleting a category
+
+**Disease & Test Management:**
+- Create, edit, publish, archive disease pages
+- Create, edit, publish diagnostic test entries
 
 **User Management:**
-- List all accounts with role and status
-- Promote to Admin, suspend, or delete accounts
-- View all submissions by a specific user
+- List all accounts: name, role, status, submission count
+- Promote to Admin, suspend, delete
 
 ---
 
-### 4.8 Disease Explorer
+### 4.9 Bilingual UI (Bengali + English)
 
-**Description:** A dedicated discovery layer that lets users start from a disease or symptom — not a specialty — and work forward to understanding their condition, knowing what tests to take, and finding the right doctor. This is the primary entry point for users who don't yet know which specialty they need.
-
----
-
-#### 4.8.1 Disease Pages
-
-Each disease has its own page with structured, bilingual content.
-
-**Disease page fields:**
-
-| Field | Required | Notes |
-|---|---|---|
-| Disease name (English) | Yes | e.g. Diabetes |
-| Disease name (Bengali) | Yes | e.g. ডায়াবেটিস |
-| Common / local names | No | Alternate names people actually search |
-| Short description | Yes | 2–3 sentences — plain language, no jargon |
-| Overview | Yes | What it is, who it affects, how common in Bangladesh |
-| Symptoms | Yes | Bulleted list — Bengali + English |
-| Causes & risk factors | Yes | Bulleted list |
-| When to see a doctor | Yes | Clear guidance — "see a doctor if…" |
-| Linked specialties | Yes | Which specialties treat this disease |
-| Linked diagnostic tests | Yes | Which tests are typically ordered (see 4.8.3) |
-| Related diseases | No | Links to related disease pages |
-| Content source / disclaimer | Yes | "This is general information only — consult a doctor for diagnosis" |
-
-**Content is admin-managed** — admins create and edit disease pages; contributors can suggest edits (same pending queue as doctor profiles).
-
-**Disease page states:** `draft` → `published` | `archived`
-
----
-
-#### 4.8.2 Browse Diseases by Category
-
-Users can explore diseases without knowing the name upfront.
-
-**Browse entry points:**
-- **By body system** — Heart & Blood, Digestive, Skin, Brain & Nerves, Bones & Joints, Eyes, Ear Nose Throat, Respiratory, Kidney & Urinary, Reproductive, Endocrine & Hormones, Mental Health, Child Health
-- **By symptom** — fever, chest pain, headache, fatigue, shortness of breath, etc. — each symptom links to diseases that commonly cause it
-- **A–Z list** — alphabetical index in both Bengali and English
-- **Search** — full-text search across disease names (Bengali + English), symptoms, and common names
-
-**Homepage integration:**
-- A "Search by Disease or Symptom" entry point sits alongside the existing "Browse by Specialty" section
-- Top 8–10 most-searched diseases shown as quick-access cards (e.g. Diabetes, High Blood Pressure, Typhoid, Dengue, Gastric, Kidney Disease, Asthma, Jaundice)
-
----
-
-#### 4.8.3 Diagnostic Tests
-
-Each test has its own structured entry linked from disease pages.
-
-**Test entry fields:**
-
-| Field | Required | Notes |
-|---|---|---|
-| Test name (English) | Yes | e.g. HbA1c |
-| Test name (Bengali) | Yes | e.g. এইচবিএওয়ানসি |
-| Common name / alias | No | e.g. "Sugar test", "Blood glucose" |
-| What it measures | Yes | Plain-language explanation |
-| Why it's done | Yes | When a doctor orders this test |
-| How to prepare | No | e.g. "Fast for 8 hours before" |
-| Where to get it | No | Type of facility — hospital lab, diagnostic center |
-| Linked diseases | Yes | Which diseases this test is used to diagnose or monitor |
-| Linked specialties | No | Which doctors typically order it |
-
-**Test list page:** Browseable and searchable, with filters by body system and disease.
-
----
-
-#### 4.8.4 Disease → Doctor Discovery Flow
-
-The end-to-end journey a user takes from symptom to doctor contact.
-
-```
-User lands on homepage
-  ↓
-Types disease / symptom in search bar  OR  clicks a disease category
-  ↓
-Disease page — reads overview, symptoms, when to see a doctor
-  ↓
-Sees "Tests you may need" section — taps a test to learn more (optional)
-  ↓
-Sees "Find a Doctor for this Condition" section
-  — shows linked specialties with doctor count and a CTA button
-  ↓
-Clicks a specialty → filtered doctor list (specialty pre-set, district defaulting to user's area)
-  ↓
-Taps a doctor card → Doctor profile page
-  ↓
-Taps phone number → calls chamber directly
-```
-
-**"Find a Doctor" section on each disease page:**
-- Lists every relevant specialty with: specialty name, short role description ("A cardiologist specialises in…"), doctor count in Bangladesh, and a "View doctors →" button
-- Filtered by user's selected district if set; defaults to all of Bangladesh
-
----
-
-#### 4.8.5 Symptom Checker (Lightweight — v1)
-
-A simple guided flow to help users narrow down which disease or specialty they may need. This is **not** a diagnostic tool — it is a navigation aid.
-
-**Flow:**
-1. User clicks "I don't know my condition — help me find a doctor"
-2. Selects body area (visual body diagram or dropdown)
-3. Selects one or more symptoms from a list for that body area
-4. App surfaces 2–4 most relevant diseases and their linked specialties
-5. User picks a disease or specialty to continue to the doctor list
-
-**Hard rules:**
-- Every screen shows the disclaimer: "This tool helps you navigate — it does not diagnose. Always consult a doctor."
-- Maximum 3 steps / 3 screens — no deep decision trees in v1
-- No storing symptom input — privacy-sensitive, not persisted
-
----
-
-### 4.9 Bilingual UI & Language Switching
-
-**Description:** The entire interface must work in both Bengali and English. The language toggle is persistent and visible on every page.
-
-**Requirements:**
 - All static UI copy has Bengali and English versions
-- Doctor names stored and displayed in both scripts
-- Language preference stored in browser (localStorage); remembered on return visits
-- URLs are language-agnostic (no `/en/` or `/bn/` prefix in v1)
-- Input fields accept both scripts; search works in either
+- Doctor names, disease names, and test names stored in both scripts
+- Language toggle: `EN | বাং` — persistent in top navigation
+- Preference stored in `localStorage`; remembered on return visits
+- Search works in both scripts simultaneously
+- No URL prefix (`/en/` or `/bn/`) in v1 — language is client-side state
 
 ---
 
-## 5. Page Map
+## 5. Design System
 
-| Page | Route | Who can access |
+### Color Palette
+| Role | Value | Usage |
+|---|---|---|
+| Primary | `#059669` Emerald | Links, active states, nav underline, logo, CTAs, hover accents |
+| Primary dark | `#047857` | Hover state on primary buttons |
+| Background | `#FFFFFF` | All page backgrounds |
+| Surface | `#FFFFFF` | Cards, panels |
+| Border | `#E5E7EB` | Card borders, dividers |
+| Text primary | `#111827` | Headings, body, labels |
+| Text secondary | `#6B7280` | Subtitles, metadata, descriptions |
+| Text muted | `#9CA3AF` | Placeholders, timestamps |
+| Icon background | `#F3F4F6` | All icon containers — unified, no per-specialty colors |
+| Icon foreground | `#1F2937` | All icons — unified black |
+
+> **Principle:** 70% emerald touches for interactive elements; white/black/gray for all structure and content. No secondary accent colors.
+
+### Typography
+- Font: Hind Siliguri — works for both Bengali and English
+- Scale: 13px body, 14px (sm), 16px (base), 18–32px headings
+- Weight: 400 regular, 500 medium, 600 semibold, 700 bold
+
+### Component Patterns
+
+**List row (primary pattern — doctors, categories, diseases, tests):**
+```
+[Icon 9×9 gray bg]  Title (semibold, gray-900)          [Chevron]
+                    Subtitle (xs, gray-500)
+                    Meta (xs, gray-400) — district · rating · yrs
+```
+
+**Pill filter chip:**
+```
+border border-gray-200 rounded-full px-3 py-1.5 text-sm
+hover: border-emerald, text-emerald
+active: border-emerald bg-emerald text-white
+```
+
+**Tab navigation (Navbar):**
+- Horizontal links with `h-0.5 bg-emerald` underline on active route
+- `EN | বাং` language toggle — plain text, bold for active language
+
+**Search bar:**
+- `border border-gray-200 rounded-xl` with search icon + `/` shortcut hint
+- No filled background — white, minimal
+
+---
+
+## 6. Page Map
+
+| Page | Route | Access |
 |---|---|---|
 | Homepage | `/` | All |
-| Search results | `/search?q=…` | All |
-| Specialty category | `/specialty/[slug]` | All |
-| Doctor profile | `/doctor/[slug]` | All |
-| Add doctor form | `/submit` | Logged-in |
-| Edit suggestion form | `/doctor/[slug]/edit` | Logged-in |
-| Login / Register | `/auth` | Visitors |
-| My account | `/account` | Logged-in |
-| Verification upload | `/account/verify` | Doctor role |
-| **Disease Explorer** | | |
-| Disease browse (by system) | `/diseases` | All |
-| Disease A–Z list | `/diseases/az` | All |
-| Disease page | `/disease/[slug]` | All |
-| Symptom checker | `/symptom-checker` | All |
-| Diagnostic tests list | `/tests` | All |
-| Test detail page | `/test/[slug]` | All |
-| **Admin** | | |
-| Admin dashboard | `/admin` | Admin only |
-| Admin review | `/admin/review/[id]` | Admin only |
-| Admin categories | `/admin/categories` | Admin only |
-| Admin disease pages | `/admin/diseases` | Admin only |
-| Admin tests | `/admin/tests` | Admin only |
-| Admin users | `/admin/users` | Admin only |
+| Find Doctors (list + filters) | `/doctors` | All |
+| Doctor Profile | `/doctors/[id]` | All |
+| Specialties browse | `/specialties` | All |
+| Specialty category | `/category/[slug]` | All |
+| Diseases browse | `/diseases` | All |
+| Disease detail | `/disease/[slug]` | All |
+| Diagnostic Tests list | `/tests` | All |
+| Test detail | `/test/[slug]` | All |
+| About | `/about` | All |
+| Login / Register | `/auth` | Visitors only |
+| My Account | `/account` | Logged-in |
+| Doctor Verification upload | `/account/verify` | Doctor role |
+| Add Doctor | `/submit` | Logged-in |
+| Suggest Edit | `/doctors/[id]/edit` | Logged-in |
+| Admin Dashboard | `/admin` | Admin only |
+| Admin — Submissions queue | `/admin/submissions` | Admin only |
+| Admin — Verifications | `/admin/verifications` | Admin only |
+| Admin — Flagged profiles | `/admin/flagged` | Admin only |
+| Admin — Categories | `/admin/categories` | Admin only |
+| Admin — Diseases & Tests | `/admin/content` | Admin only |
+| Admin — Users | `/admin/users` | Admin only |
 
 ---
 
-## 6. Platform & Technology
+## 7. Technology Stack
 
-- **V1:** Responsive web app (Next.js + Tailwind CSS — current stack)
-- **V2:** Android-first hybrid mobile app
-- **Database:** PostgreSQL — relational model suits the taxonomy + profile + edit-history structure
-- **Search:** PostgreSQL full-text search (v1); Meilisearch or Typesense (v2 if needed)
-- **Auth:** NextAuth.js or Supabase Auth
-- **File storage:** Cloudflare R2 or AWS S3 (doctor photos, verification documents)
-- **SMS (OTP):** SSL Wireless or Twilio Bangladesh
+| Layer | Choice | Notes |
+|---|---|---|
+| Framework | Next.js 16 (App Router) | Current; Turbopack for dev |
+| Styling | Tailwind CSS v4 | |
+| Language | TypeScript | |
+| Icons | Lucide React | |
+| Font | Hind Siliguri (Google Fonts) | Bengali + Latin |
+| Database | PostgreSQL | Relational; suits taxonomy + edit-history |
+| ORM | Prisma | |
+| Auth | NextAuth.js or Supabase Auth | Phone OTP + email |
+| Search | PostgreSQL FTS (v1) → Meilisearch (v2) | |
+| File storage | Cloudflare R2 | Doctor photos, verification docs |
+| SMS / OTP | SSL Wireless (BD) | Local provider |
+| Hosting | Vercel | Current deployment target |
+
+> **v1 data layer:** Static TypeScript data files (`doctors.ts`, `categories.ts`, `diseases.ts`, `tests.ts`). Migration to PostgreSQL is the first backend milestone.
 
 ---
 
-## 7. Geographic Rollout
+## 8. Geographic Rollout
 
-- Data model includes all 8 divisions and 64 districts of Bangladesh from day one
-- Division and district dropdowns are fully populated at launch
-- Initial data seeding and admin/outreach effort focused on **Dhaka**
-- Profiles from other districts can be submitted by contributors at any time
+- Data model: all 8 divisions, all 64 districts pre-populated from day one
+- Division/district dropdowns fully available at launch
+- **Phase 1 focus:** Dhaka — data seeding, admin effort, outreach
+- **Phase 2:** Chattogram, Sylhet
+- **Phase 3:** Remaining 5 divisions
+- Profiles from any district can be submitted by contributors at any time
 
 ---
 
-## 8. Non-Functional Requirements
+## 9. Non-Functional Requirements
 
 | Requirement | Target |
 |---|---|
 | Uptime | 99.5% |
-| Search response time | < 1 second (typical query) |
-| Page weight (homepage) | < 200 KB initial load |
-| Mobile compatibility | Works on Chrome Android 80+, low-end devices |
+| Search response | < 1 second for typical query |
+| Homepage initial load | < 200 KB transferred |
+| Mobile compatibility | Chrome Android 80+, low-end devices (primary BD market) |
 | Accessibility | WCAG 2.1 AA for core user flows |
-| Data privacy | No personal user data sold; phone numbers shown only for doctors |
+| Bilingual completeness | 100% of UI copy has both EN and BN versions |
+| Low-bandwidth tolerance | No heavy images on list pages; lazy load on profiles |
 
 ---
 
-## 9. Open Questions for Later Phases
+## 10. Future Phases (Not in v1)
 
-- **Contributor reputation:** Should frequent, accurate contributors earn a trust score that reduces manual review overhead?
-- **Doctor analytics:** Should verified doctors see a dashboard with profile view counts?
-- **BMDC integration:** Automate verification by querying BMDC's public registry (if API becomes available)?
-- **Review system:** Should visitors be able to leave a rating or comment on a doctor profile (v2)?
-- **WhatsApp deep-link:** Tap-to-WhatsApp alongside tap-to-call for chambers that use WhatsApp for appointments?
+| Feature | Phase | Notes |
+|---|---|---|
+| User reviews & ratings | v2 | One review per verified visit |
+| WhatsApp deep-link | v2 | Alongside tap-to-call for chambers that use WhatsApp |
+| Android app | v2 | React Native or hybrid; Android-first for BD market |
+| Contributor reputation | v3 | Trust score to reduce manual review burden |
+| Doctor analytics dashboard | v3 | Profile views, contact tap count |
+| BMDC registry integration | v3 | Automate badge verification if API becomes available |
+| Symptom checker (full) | v3 | Multi-step guided flow; disease shortlisting |
+| Telemedicine referrals | v4 | Out of scope for v1; link to partner platforms |
 
 ---
 
-## 10. Changelog
+## 11. Changelog
 
 | Version | Date | Summary |
 |---|---|---|
 | 1.0 | 2026-05-17 | Initial PRD — overview, user types, core features |
-| 2.0 | 2026-05-20 | Expanded to full feature spec — detailed flows, page map, tech stack, admin panel |
-| 3.0 | 2026-05-20 | Added Disease Explorer — disease pages, test directory, symptom checker, disease → doctor discovery flow |
+| 2.0 | 2026-05-20 | Expanded to full feature spec — flows, page map, tech stack, admin panel |
+| 3.0 | 2026-05-20 | Added Disease Explorer — disease pages, test directory, disease → doctor flow |
+| 4.0 | 2026-05-20 | Definitive version — consolidated all features, added design system, data model notes, geographic rollout, full page map, v1 vs future phase split |
