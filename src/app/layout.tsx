@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ChatAssistant from "@/components/ChatAssistant";
 
 const hind = Hind_Siliguri({
   weight: ["300", "400", "500", "600", "700"],
@@ -29,6 +30,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ChatAssistant />
         </LanguageProvider>
       </body>
     </html>
