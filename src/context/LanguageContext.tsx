@@ -7,12 +7,14 @@ interface LanguageContextType {
   lang: Language;
   toggle: () => void;
   t: (en: string, bn: string) => string;
+  tArr: (en: string[], bn: string[]) => string[];
 }
 
 const LanguageContext = createContext<LanguageContextType>({
   lang: "en",
   toggle: () => {},
   t: (en) => en,
+  tArr: (en) => en,
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -20,9 +22,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const toggle = () => setLang((l) => (l === "en" ? "bn" : "en"));
   const t = (en: string, bn: string) => (lang === "en" ? en : bn);
+  const tArr = (en: string[], bn: string[]) => (lang === "en" ? en : bn);
 
   return (
-    <LanguageContext.Provider value={{ lang, toggle, t }}>
+    <LanguageContext.Provider value={{ lang, toggle, t, tArr }}>
       {children}
     </LanguageContext.Provider>
   );

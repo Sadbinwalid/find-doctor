@@ -31,11 +31,14 @@ export default function Navbar() {
             <Link href="/doctors" className="text-sm text-gray-600 hover:text-[#0066CC] transition-colors">
               {t("Find Doctors", "ডাক্তার খুঁজুন")}
             </Link>
+            <Link href="/diseases" className="text-sm text-gray-600 hover:text-[#0066CC] transition-colors">
+              {t("Diseases", "রোগ")}
+            </Link>
+            <Link href="/tests" className="text-sm text-gray-600 hover:text-[#0066CC] transition-colors">
+              {t("Tests", "পরীক্ষা")}
+            </Link>
             <Link href="/specialties" className="text-sm text-gray-600 hover:text-[#0066CC] transition-colors">
               {t("Specialties", "বিশেষজ্ঞতা")}
-            </Link>
-            <Link href="/about" className="text-sm text-gray-600 hover:text-[#0066CC] transition-colors">
-              {t("About", "আমাদের সম্পর্কে")}
             </Link>
           </div>
 
@@ -62,6 +65,8 @@ export default function Navbar() {
             {[
               { href: "/", en: "Home", bn: "হোম" },
               { href: "/doctors", en: "Find Doctors", bn: "ডাক্তার খুঁজুন" },
+              { href: "/diseases", en: "Diseases", bn: "রোগ" },
+              { href: "/tests", en: "Tests", bn: "পরীক্ষা" },
               { href: "/specialties", en: "Specialties", bn: "বিশেষজ্ঞতা" },
               { href: "/about", en: "About", bn: "আমাদের সম্পর্কে" },
             ].map((item) => (

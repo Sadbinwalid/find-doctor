@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { categories } from "@/data/categories";
 import { doctors } from "@/data/doctors";
 import { locations } from "@/data/locations";
+import { diseases } from "@/data/diseases";
 import CategoryCard from "@/components/CategoryCard";
 import DoctorCard from "@/components/DoctorCard";
 
@@ -148,6 +149,37 @@ export default function HomePage() {
               <p className="text-xs text-gray-500 mt-0.5">{t(stat.en, stat.bn)}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Disease Explorer */}
+      <section className="max-w-6xl mx-auto px-4 py-12 border-b border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">{t("Search by Disease or Symptom", "রোগ বা লক্ষণ দিয়ে খুঁজুন")}</h2>
+            <p className="text-sm text-gray-500 mt-0.5">{t("Don't know the specialty? Start with your condition.", "বিশেষজ্ঞতা জানেন না? রোগ দিয়ে শুরু করুন।")}</p>
+          </div>
+          <a href="/diseases" className="text-sm text-[#0066CC] hover:underline hidden md:block">
+            {t("View all →", "সব দেখুন →")}
+          </a>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {["diabetes", "hypertension", "dengue", "typhoid", "gastric", "asthma", "kidney-disease", "heart-disease", "skin-allergy", "child-fever"].map((slug) => {
+            const d = diseases.find((x) => x.slug === slug);
+            if (!d) return null;
+            return (
+              <a
+                key={slug}
+                href={`/disease/${slug}`}
+                className="group border border-gray-200 rounded-xl p-4 hover:border-[#0066CC] hover:bg-blue-50 transition-all text-center"
+              >
+                <p className="font-semibold text-sm text-gray-900 group-hover:text-[#0066CC] transition-colors leading-tight">
+                  {t(d.nameEn, d.nameBn)}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">{d.linkedSpecialties.length} {t("specialist(s)", "বিশেষজ্ঞ")}</p>
+              </a>
+            );
+          })}
         </div>
       </section>
 
