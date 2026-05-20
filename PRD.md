@@ -1,6 +1,6 @@
 # Product Requirements Document: DoctorBD — Doctor Finder Bangladesh
 
-**Version:** 2.0
+**Version:** 3.0
 **Date:** 2026-05-20
 **Branch:** `doctor-site`
 **Status:** Active Development
@@ -227,7 +227,125 @@ Cardiology, Dermatology, Neurology, Pediatrics, Gynecology & Obstetrics, Orthope
 
 ---
 
-### 4.8 Bilingual UI & Language Switching
+### 4.8 Disease Explorer
+
+**Description:** A dedicated discovery layer that lets users start from a disease or symptom — not a specialty — and work forward to understanding their condition, knowing what tests to take, and finding the right doctor. This is the primary entry point for users who don't yet know which specialty they need.
+
+---
+
+#### 4.8.1 Disease Pages
+
+Each disease has its own page with structured, bilingual content.
+
+**Disease page fields:**
+
+| Field | Required | Notes |
+|---|---|---|
+| Disease name (English) | Yes | e.g. Diabetes |
+| Disease name (Bengali) | Yes | e.g. ডায়াবেটিস |
+| Common / local names | No | Alternate names people actually search |
+| Short description | Yes | 2–3 sentences — plain language, no jargon |
+| Overview | Yes | What it is, who it affects, how common in Bangladesh |
+| Symptoms | Yes | Bulleted list — Bengali + English |
+| Causes & risk factors | Yes | Bulleted list |
+| When to see a doctor | Yes | Clear guidance — "see a doctor if…" |
+| Linked specialties | Yes | Which specialties treat this disease |
+| Linked diagnostic tests | Yes | Which tests are typically ordered (see 4.8.3) |
+| Related diseases | No | Links to related disease pages |
+| Content source / disclaimer | Yes | "This is general information only — consult a doctor for diagnosis" |
+
+**Content is admin-managed** — admins create and edit disease pages; contributors can suggest edits (same pending queue as doctor profiles).
+
+**Disease page states:** `draft` → `published` | `archived`
+
+---
+
+#### 4.8.2 Browse Diseases by Category
+
+Users can explore diseases without knowing the name upfront.
+
+**Browse entry points:**
+- **By body system** — Heart & Blood, Digestive, Skin, Brain & Nerves, Bones & Joints, Eyes, Ear Nose Throat, Respiratory, Kidney & Urinary, Reproductive, Endocrine & Hormones, Mental Health, Child Health
+- **By symptom** — fever, chest pain, headache, fatigue, shortness of breath, etc. — each symptom links to diseases that commonly cause it
+- **A–Z list** — alphabetical index in both Bengali and English
+- **Search** — full-text search across disease names (Bengali + English), symptoms, and common names
+
+**Homepage integration:**
+- A "Search by Disease or Symptom" entry point sits alongside the existing "Browse by Specialty" section
+- Top 8–10 most-searched diseases shown as quick-access cards (e.g. Diabetes, High Blood Pressure, Typhoid, Dengue, Gastric, Kidney Disease, Asthma, Jaundice)
+
+---
+
+#### 4.8.3 Diagnostic Tests
+
+Each test has its own structured entry linked from disease pages.
+
+**Test entry fields:**
+
+| Field | Required | Notes |
+|---|---|---|
+| Test name (English) | Yes | e.g. HbA1c |
+| Test name (Bengali) | Yes | e.g. এইচবিএওয়ানসি |
+| Common name / alias | No | e.g. "Sugar test", "Blood glucose" |
+| What it measures | Yes | Plain-language explanation |
+| Why it's done | Yes | When a doctor orders this test |
+| How to prepare | No | e.g. "Fast for 8 hours before" |
+| Where to get it | No | Type of facility — hospital lab, diagnostic center |
+| Linked diseases | Yes | Which diseases this test is used to diagnose or monitor |
+| Linked specialties | No | Which doctors typically order it |
+
+**Test list page:** Browseable and searchable, with filters by body system and disease.
+
+---
+
+#### 4.8.4 Disease → Doctor Discovery Flow
+
+The end-to-end journey a user takes from symptom to doctor contact.
+
+```
+User lands on homepage
+  ↓
+Types disease / symptom in search bar  OR  clicks a disease category
+  ↓
+Disease page — reads overview, symptoms, when to see a doctor
+  ↓
+Sees "Tests you may need" section — taps a test to learn more (optional)
+  ↓
+Sees "Find a Doctor for this Condition" section
+  — shows linked specialties with doctor count and a CTA button
+  ↓
+Clicks a specialty → filtered doctor list (specialty pre-set, district defaulting to user's area)
+  ↓
+Taps a doctor card → Doctor profile page
+  ↓
+Taps phone number → calls chamber directly
+```
+
+**"Find a Doctor" section on each disease page:**
+- Lists every relevant specialty with: specialty name, short role description ("A cardiologist specialises in…"), doctor count in Bangladesh, and a "View doctors →" button
+- Filtered by user's selected district if set; defaults to all of Bangladesh
+
+---
+
+#### 4.8.5 Symptom Checker (Lightweight — v1)
+
+A simple guided flow to help users narrow down which disease or specialty they may need. This is **not** a diagnostic tool — it is a navigation aid.
+
+**Flow:**
+1. User clicks "I don't know my condition — help me find a doctor"
+2. Selects body area (visual body diagram or dropdown)
+3. Selects one or more symptoms from a list for that body area
+4. App surfaces 2–4 most relevant diseases and their linked specialties
+5. User picks a disease or specialty to continue to the doctor list
+
+**Hard rules:**
+- Every screen shows the disclaimer: "This tool helps you navigate — it does not diagnose. Always consult a doctor."
+- Maximum 3 steps / 3 screens — no deep decision trees in v1
+- No storing symptom input — privacy-sensitive, not persisted
+
+---
+
+### 4.9 Bilingual UI & Language Switching
 
 **Description:** The entire interface must work in both Bengali and English. The language toggle is persistent and visible on every page.
 
@@ -253,9 +371,19 @@ Cardiology, Dermatology, Neurology, Pediatrics, Gynecology & Obstetrics, Orthope
 | Login / Register | `/auth` | Visitors |
 | My account | `/account` | Logged-in |
 | Verification upload | `/account/verify` | Doctor role |
+| **Disease Explorer** | | |
+| Disease browse (by system) | `/diseases` | All |
+| Disease A–Z list | `/diseases/az` | All |
+| Disease page | `/disease/[slug]` | All |
+| Symptom checker | `/symptom-checker` | All |
+| Diagnostic tests list | `/tests` | All |
+| Test detail page | `/test/[slug]` | All |
+| **Admin** | | |
 | Admin dashboard | `/admin` | Admin only |
 | Admin review | `/admin/review/[id]` | Admin only |
 | Admin categories | `/admin/categories` | Admin only |
+| Admin disease pages | `/admin/diseases` | Admin only |
+| Admin tests | `/admin/tests` | Admin only |
 | Admin users | `/admin/users` | Admin only |
 
 ---
@@ -310,3 +438,4 @@ Cardiology, Dermatology, Neurology, Pediatrics, Gynecology & Obstetrics, Orthope
 |---|---|---|
 | 1.0 | 2026-05-17 | Initial PRD — overview, user types, core features |
 | 2.0 | 2026-05-20 | Expanded to full feature spec — detailed flows, page map, tech stack, admin panel |
+| 3.0 | 2026-05-20 | Added Disease Explorer — disease pages, test directory, symptom checker, disease → doctor discovery flow |
