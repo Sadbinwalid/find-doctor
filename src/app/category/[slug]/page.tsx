@@ -41,14 +41,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-500 mb-4 flex items-center gap-1">
-          <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
+          <Link href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</Link>
           <span>/</span>
-          <Link href="/specialties" className="hover:text-[#C84B31]">{t("Specialties", "বিশেষজ্ঞতা")}</Link>
+          <Link href="/specialties" className="hover:text-[#059669]">{t("Specialties", "বিশেষজ্ঞতা")}</Link>
           <span>/</span>
           <span className="text-gray-900">{t(category.nameEn, category.nameBn)}</span>
         </nav>
 
-        <Link href="/specialties" className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-[#C84B31] mb-5">
+        <Link href="/specialties" className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-[#059669] mb-5">
           <ArrowLeft size={15} />
           {t("All Specialties", "সব বিশেষজ্ঞতা")}
         </Link>

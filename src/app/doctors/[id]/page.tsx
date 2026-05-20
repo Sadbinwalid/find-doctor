@@ -28,14 +28,14 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-500 mb-4 flex items-center gap-1">
-          <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
+          <Link href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</Link>
           <span>/</span>
-          <Link href="/doctors" className="hover:text-[#C84B31]">{t("Doctors", "ডাক্তার")}</Link>
+          <Link href="/doctors" className="hover:text-[#059669]">{t("Doctors", "ডাক্তার")}</Link>
           <span>/</span>
           <span className="text-gray-900 truncate">{t(doctor.nameEn, doctor.nameBn)}</span>
         </nav>
 
-        <Link href="/doctors" className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-[#C84B31] mb-5">
+        <Link href="/doctors" className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-[#059669] mb-5">
           <ArrowLeft size={15} />
           {t("Back to doctors", "ডাক্তারদের কাছে ফিরে যান")}
         </Link>
@@ -45,7 +45,7 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
           <div className="flex gap-5 items-start">
             <div
               className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl flex-shrink-0"
-              style={{ backgroundColor: category?.color || "#C84B31" }}
+              style={{ backgroundColor: category?.color || "#059669" }}
             >
               {initials}
             </div>
@@ -98,7 +98,7 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
               <p className="text-xs text-gray-500 mt-0.5">{t("Years exp.", "বছরের অভিজ্ঞতা")}</p>
             </div>
             <div className="text-center">
-              <p className="font-bold text-[#C84B31]">৳{doctor.fee}</p>
+              <p className="font-bold text-[#059669]">৳{doctor.fee}</p>
               <p className="text-xs text-gray-500 mt-0.5">{t("Per visit", "প্রতি ভিজিট")}</p>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
             {/* About */}
             <div className="bg-white border border-gray-200 rounded-xl p-5">
               <h2 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Award size={16} className="text-[#C84B31]" />
+                <Award size={16} className="text-[#059669]" />
                 {t("About", "সম্পর্কে")}
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
@@ -145,16 +145,16 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
               <h2 className="font-semibold text-gray-900 mb-4">{t("Contact & Location", "যোগাযোগ ও অবস্থান")}</h2>
               <div className="flex flex-col gap-3">
                 <div className="flex items-start gap-2.5">
-                  <Phone size={15} className="text-[#C84B31] mt-0.5 flex-shrink-0" />
+                  <Phone size={15} className="text-[#059669] mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-xs text-gray-500">{t("Phone", "ফোন")}</p>
-                    <a href={`tel:${doctor.phone}`} className="text-sm font-medium text-gray-900 hover:text-[#C84B31]">
+                    <a href={`tel:${doctor.phone}`} className="text-sm font-medium text-gray-900 hover:text-[#059669]">
                       {doctor.phone}
                     </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <MapPin size={15} className="text-[#C84B31] mt-0.5 flex-shrink-0" />
+                  <MapPin size={15} className="text-[#059669] mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-xs text-gray-500">{t("Hospital", "হাসপাতাল")}</p>
                     <p className="text-sm font-medium text-gray-900">{t(doctor.hospitalEn, doctor.hospitalBn)}</p>
@@ -174,7 +174,7 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
 
               <a
                 href={`tel:${doctor.phone}`}
-                className="mt-5 w-full flex items-center justify-center gap-2 bg-[#C84B31] text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-red-800 transition-colors"
+                className="mt-5 w-full flex items-center justify-center gap-2 bg-[#059669] text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-emerald-800 transition-colors"
               >
                 <Phone size={15} />
                 {t("Call Doctor", "ডাক্তারকে কল করুন")}
@@ -182,10 +182,10 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
             </div>
 
             {/* Fee card */}
-            <div className="bg-red-50/40 border border-red-100 rounded-xl p-4">
-              <p className="text-xs text-[#C84B31] font-medium">{t("Consultation Fee", "পরামর্শ ফি")}</p>
-              <p className="text-3xl font-bold text-[#C84B31] mt-1">৳{doctor.fee}</p>
-              <p className="text-xs text-red-600 mt-0.5">{t("per visit", "প্রতি ভিজিট")}</p>
+            <div className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-4">
+              <p className="text-xs text-[#059669] font-medium">{t("Consultation Fee", "পরামর্শ ফি")}</p>
+              <p className="text-3xl font-bold text-[#059669] mt-1">৳{doctor.fee}</p>
+              <p className="text-xs text-emerald-600 mt-0.5">{t("per visit", "প্রতি ভিজিট")}</p>
             </div>
           </div>
         </div>

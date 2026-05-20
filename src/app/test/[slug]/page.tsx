@@ -19,18 +19,18 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
   return (
     <div className="bg-white min-h-screen">
       {/* Header */}
-      <div className="border-b border-gray-100 bg-gradient-to-b from-purple-50 to-white">
+      <div className="border-b border-gray-100 bg-gradient-to-b from-gray-100 to-white">
         <div className="max-w-3xl mx-auto px-4 py-8">
           <nav className="text-xs text-gray-500 mb-4 flex items-center gap-1 flex-wrap">
-            <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
+            <Link href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</Link>
             <ChevronRight size={12} />
-            <Link href="/tests" className="hover:text-[#C84B31]">{t("Tests", "পরীক্ষা")}</Link>
+            <Link href="/tests" className="hover:text-[#059669]">{t("Tests", "পরীক্ষা")}</Link>
             <ChevronRight size={12} />
             <span className="text-gray-900">{t(test.nameEn, test.nameBn)}</span>
           </nav>
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-              <FlaskConical size={22} className="text-purple-600" />
+            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <FlaskConical size={22} className="text-gray-800" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -57,7 +57,7 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
         </section>
 
         {/* Why it's done */}
-        <section className="border border-red-100 bg-red-50/40 rounded-xl p-5">
+        <section className="border border-emerald-100 bg-emerald-50/40 rounded-xl p-5">
           <h2 className="text-base font-bold text-gray-900 mb-2">{t("Why It's Done", "কেন করা হয়")}</h2>
           <p className="text-sm text-gray-700 leading-relaxed">{t(test.whyItsDoneEn, test.whyItsDoneBn)}</p>
         </section>
@@ -91,15 +91,15 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
                 <Link
                   key={disease.slug}
                   href={`/disease/${disease.slug}`}
-                  className="group flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 hover:border-[#C84B31] hover:bg-red-50 transition-all"
+                  className="group flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 hover:border-[#059669] hover:bg-emerald-50 transition-all"
                 >
                   <div>
-                    <p className="font-medium text-sm text-gray-900 group-hover:text-[#C84B31] transition-colors">
+                    <p className="font-medium text-sm text-gray-900 group-hover:text-[#059669] transition-colors">
                       {t(disease.nameEn, disease.nameBn)}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">{t(disease.shortDescEn, disease.shortDescBn)}</p>
                   </div>
-                  <ChevronRight size={14} className="text-gray-300 group-hover:text-[#C84B31] flex-shrink-0 transition-colors" />
+                  <ChevronRight size={14} className="text-gray-300 group-hover:text-[#059669] flex-shrink-0 transition-colors" />
                 </Link>
               ))}
             </div>
@@ -107,7 +107,7 @@ export default function TestPage({ params }: { params: Promise<{ slug: string }>
         )}
 
         <div className="text-center pt-2">
-          <Link href="/tests" className="text-sm text-[#C84B31] hover:underline">
+          <Link href="/tests" className="text-sm text-[#059669] hover:underline">
             ← {t("Back to all tests", "সব পরীক্ষায় ফিরে যান")}
           </Link>
         </div>

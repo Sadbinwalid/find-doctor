@@ -10,7 +10,7 @@ export default function SpecialtiesPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <nav className="text-xs text-gray-500 mb-4">
-        <a href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</a>
+        <a href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</a>
         {" / "}
         <span className="text-gray-900">{t("Specialties", "বিশেষজ্ঞতা")}</span>
       </nav>

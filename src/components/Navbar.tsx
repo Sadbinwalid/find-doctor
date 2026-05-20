@@ -27,7 +27,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#C84B31] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#059669] rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">ড</span>
             </div>
             <span className="font-bold text-gray-900 text-base">DoctorBD</span>
@@ -41,13 +41,13 @@ export default function Navbar() {
                 href={link.href}
                 className={`relative px-4 h-14 flex items-center text-sm font-medium transition-colors ${
                   isActive(link.href)
-                    ? "text-[#C84B31]"
+                    ? "text-[#059669]"
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 {t(link.en, link.bn)}
                 {isActive(link.href) && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C84B31] rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#059669] rounded-full" />
                 )}
               </Link>
             ))}
@@ -92,7 +92,7 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className={`px-3 py-2.5 text-sm rounded-lg ${
                   isActive(link.href)
-                    ? "text-[#C84B31] font-medium bg-red-50"
+                    ? "text-[#059669] font-medium bg-emerald-50"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
               >

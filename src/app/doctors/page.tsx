@@ -81,7 +81,7 @@ function DoctorsPageInner() {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="text-xs text-gray-500 mb-4">
-        <a href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</a>
+        <a href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</a>
         {" / "}
         <span className="text-gray-900">{t("Find Doctors", "ডাক্তার খুঁজুন")}</span>
       </nav>
@@ -120,7 +120,7 @@ function DoctorsPageInner() {
                       type="checkbox"
                       checked={selectedSpecialties.includes(cat.slug)}
                       onChange={() => toggleSpecialty(cat.slug)}
-                      className="w-3.5 h-3.5 accent-[#C84B31]"
+                      className="w-3.5 h-3.5 accent-[#059669]"
                     />
                     <span className="text-xs text-gray-600 group-hover:text-gray-900">
                       {t(cat.nameEn, cat.nameBn)}
@@ -178,11 +178,11 @@ function DoctorsPageInner() {
                 step={100}
                 value={maxFee}
                 onChange={(e) => setMaxFee(Number(e.target.value))}
-                className="w-full accent-[#C84B31]"
+                className="w-full accent-[#059669]"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>৳200</span>
-                <span className="font-medium text-[#C84B31]">৳{maxFee}</span>
+                <span className="font-medium text-[#059669]">৳{maxFee}</span>
               </div>
             </div>
 
@@ -195,7 +195,7 @@ function DoctorsPageInner() {
                   setSelectedDistrict("");
                   setMaxFee(2000);
                 }}
-                className="text-xs text-red-500 hover:text-red-700 text-left"
+                className="text-xs text-emerald-500 hover:text-emerald-700 text-left"
               >
                 {t("Clear all filters", "সব ফিল্টার মুছুন")} ({activeFiltersCount})
               </button>
@@ -223,7 +223,7 @@ function DoctorsPageInner() {
             >
               <SlidersHorizontal size={15} />
               {activeFiltersCount > 0 && (
-                <span className="bg-[#C84B31] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">{activeFiltersCount}</span>
+                <span className="bg-[#059669] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">{activeFiltersCount}</span>
               )}
             </button>
           </div>

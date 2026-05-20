@@ -30,7 +30,7 @@ export default function HomePage() {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
             {t("Find the right doctor", "সঠিক ডাক্তার খুঁজুন")}
             <br />
-            <span className="text-[#C84B31]">{t("in Bangladesh", "বাংলাদেশে")}</span>
+            <span className="text-[#059669]">{t("in Bangladesh", "বাংলাদেশে")}</span>
           </h1>
           <p className="text-gray-500 text-sm mb-8">
             {t(
@@ -68,7 +68,7 @@ export default function HomePage() {
               <button
                 key={tag.slug}
                 onClick={() => router.push(`/category/${tag.slug}`)}
-                className="text-xs px-3 py-1.5 border border-gray-200 rounded-full text-gray-600 hover:border-[#C84B31] hover:text-[#C84B31] transition-colors"
+                className="text-xs px-3 py-1.5 border border-gray-200 rounded-full text-gray-600 hover:border-[#059669] hover:text-[#059669] transition-colors"
               >
                 {t(tag.en, tag.bn)}
               </button>
@@ -87,7 +87,7 @@ export default function HomePage() {
             { value: "64", en: "Districts", bn: "জেলা" },
           ].map((stat, i) => (
             <div key={i} className="border border-gray-200 rounded-xl px-4 py-4 text-center">
-              <p className={`text-2xl font-bold ${i === 1 ? "text-[#C84B31]" : "text-gray-900"}`}>
+              <p className={`text-2xl font-bold ${i === 1 ? "text-[#059669]" : "text-gray-900"}`}>
                 {stat.value}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">{t(stat.en, stat.bn)}</p>
@@ -108,7 +108,7 @@ export default function HomePage() {
                 {t("Don't know the specialty? Start with your condition.", "বিশেষজ্ঞতা জানেন না? রোগ দিয়ে শুরু করুন।")}
               </p>
             </div>
-            <a href="/diseases" className="flex items-center gap-1 text-xs text-[#C84B31] hover:underline font-medium">
+            <a href="/diseases" className="flex items-center gap-1 text-xs text-[#059669] hover:underline font-medium">
               {t("View all", "সব দেখুন")} <ChevronRight size={12} />
             </a>
           </div>
@@ -121,7 +121,7 @@ export default function HomePage() {
                 <a
                   key={slug}
                   href={`/disease/${slug}`}
-                  className="px-3 py-1.5 border border-gray-200 rounded-full text-sm text-gray-700 hover:border-[#C84B31] hover:text-[#C84B31] transition-colors"
+                  className="px-3 py-1.5 border border-gray-200 rounded-full text-sm text-gray-700 hover:border-[#059669] hover:text-[#059669] transition-colors"
                 >
                   {t(d.nameEn, d.nameBn)}
                 </a>
@@ -139,7 +139,7 @@ export default function HomePage() {
               <h2 className="text-base font-bold text-gray-900">{t("Browse by Specialty", "বিশেষজ্ঞতা অনুযায়ী")}</h2>
               <p className="text-xs text-gray-400 mt-0.5">{t("Find the right specialist for your condition", "আপনার রোগের সঠিক বিশেষজ্ঞ")}</p>
             </div>
-            <a href="/specialties" className="flex items-center gap-1 text-xs text-[#C84B31] hover:underline font-medium">
+            <a href="/specialties" className="flex items-center gap-1 text-xs text-[#059669] hover:underline font-medium">
               {t("View all", "সব দেখুন")} <ChevronRight size={12} />
             </a>
           </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
               <h2 className="text-base font-bold text-gray-900">{t("Available Doctors", "উপলব্ধ ডাক্তার")}</h2>
               <p className="text-xs text-gray-400 mt-0.5">{t("Top-rated doctors available now", "এখন উপলব্ধ শীর্ষ রেটেড ডাক্তার")}</p>
             </div>
-            <a href="/doctors" className="flex items-center gap-1 text-xs text-[#C84B31] hover:underline font-medium">
+            <a href="/doctors" className="flex items-center gap-1 text-xs text-[#059669] hover:underline font-medium">
               {t("View all", "সব দেখুন")} <ChevronRight size={12} />
             </a>
           </div>
@@ -182,7 +182,7 @@ export default function HomePage() {
           </div>
           <a
             href="tel:16457"
-            className="bg-[#C84B31] text-white font-bold text-lg px-6 py-2 rounded-lg hover:bg-[#b03e27] transition-colors flex-shrink-0"
+            className="bg-[#059669] text-white font-bold text-lg px-6 py-2 rounded-lg hover:bg-[#047857] transition-colors flex-shrink-0"
           >
             16457
           </a>

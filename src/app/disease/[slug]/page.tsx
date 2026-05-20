@@ -27,9 +27,9 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
       <div className="border-b border-gray-100 bg-gradient-to-b from-blue-50 to-white">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <nav className="text-xs text-gray-500 mb-4 flex items-center gap-1">
-            <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
+            <Link href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</Link>
             <ChevronRight size={12} />
-            <Link href="/diseases" className="hover:text-[#C84B31]">{t("Diseases", "রোগ")}</Link>
+            <Link href="/diseases" className="hover:text-[#059669]">{t("Diseases", "রোগ")}</Link>
             <ChevronRight size={12} />
             <span className="text-gray-900">{t(disease.nameEn, disease.nameBn)}</span>
           </nav>
@@ -61,14 +61,14 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Symptoms */}
-          <section className="bg-orange-50 border border-orange-100 rounded-xl p-5">
+          <section className="bg-gray-50 border border-gray-200 rounded-xl p-5">
             <h2 className="text-base font-bold text-gray-900 mb-3">
               {t("Symptoms", "লক্ষণসমূহ")}
             </h2>
             <ul className="space-y-2">
               {tArr(disease.symptomsEn, disease.symptomsBn).map((symptom, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                  <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
                   {symptom}
                 </li>
               ))}
@@ -92,15 +92,15 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
         </div>
 
         {/* When to see a doctor */}
-        <section className="bg-red-50/40 border border-red-100 rounded-xl p-5">
+        <section className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <AlertCircle size={18} className="text-[#C84B31]" />
+            <AlertCircle size={18} className="text-[#059669]" />
             <h2 className="text-base font-bold text-gray-900">{t("When to See a Doctor", "কখন ডাক্তার দেখাবেন")}</h2>
           </div>
           <ul className="space-y-2">
             {tArr(disease.whenToSeeEn, disease.whenToSeeBn).map((item, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                <span className="w-1.5 h-1.5 bg-[#C84B31] rounded-full mt-2 flex-shrink-0" />
+                <span className="w-1.5 h-1.5 bg-[#059669] rounded-full mt-2 flex-shrink-0" />
                 {item}
               </li>
             ))}
@@ -111,7 +111,7 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
         {linkedTests.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <FlaskConical size={18} className="text-purple-600" />
+              <FlaskConical size={18} className="text-gray-800" />
               <h2 className="text-lg font-bold text-gray-900">{t("Tests You May Need", "যে পরীক্ষাগুলো প্রয়োজন হতে পারে")}</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -119,20 +119,20 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
                 <Link
                   key={test.slug}
                   href={`/test/${test.slug}`}
-                  className="group flex items-start gap-3 border border-gray-200 rounded-xl p-4 hover:border-purple-300 hover:bg-purple-50 transition-all"
+                  className="group flex items-start gap-3 border border-gray-200 rounded-xl p-4 hover:border-gray-300 hover:bg-gray-100 transition-all"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                    <FlaskConical size={14} className="text-purple-600" />
+                  <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <FlaskConical size={14} className="text-gray-800" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-gray-900 group-hover:text-purple-700 transition-colors">
+                    <p className="font-medium text-sm text-gray-900 group-hover:text-gray-900 transition-colors">
                       {t(test.nameEn, test.nameBn)}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
                       {t(test.whatItMeasuresEn, test.whatItMeasuresBn)}
                     </p>
                   </div>
-                  <ChevronRight size={14} className="text-gray-300 group-hover:text-purple-400 flex-shrink-0 mt-1 transition-colors" />
+                  <ChevronRight size={14} className="text-gray-300 group-hover:text-gray-400 flex-shrink-0 mt-1 transition-colors" />
                 </Link>
               ))}
             </div>
@@ -143,7 +143,7 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
         {linkedCategories.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <Stethoscope size={18} className="text-[#C84B31]" />
+              <Stethoscope size={18} className="text-[#059669]" />
               <h2 className="text-lg font-bold text-gray-900">{t("Find a Doctor for this Condition", "এই রোগের জন্য ডাক্তার খুঁজুন")}</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
@@ -153,16 +153,16 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
-                    className="group flex items-center justify-between border border-gray-200 rounded-xl p-4 hover:border-[#C84B31] hover:bg-red-50 transition-all"
+                    className="group flex items-center justify-between border border-gray-200 rounded-xl p-4 hover:border-[#059669] hover:bg-emerald-50 transition-all"
                   >
                     <div>
-                      <p className="font-semibold text-sm text-gray-900 group-hover:text-[#C84B31] transition-colors">
+                      <p className="font-semibold text-sm text-gray-900 group-hover:text-[#059669] transition-colors">
                         {t(cat.nameEn, cat.nameBn)}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">{t(cat.descriptionEn, cat.descriptionBn)}</p>
-                      <p className="text-xs text-[#C84B31] mt-1">{count} {t("doctors available", "জন ডাক্তার উপলব্ধ")}</p>
+                      <p className="text-xs text-[#059669] mt-1">{count} {t("doctors available", "জন ডাক্তার উপলব্ধ")}</p>
                     </div>
-                    <ArrowRight size={16} className="text-gray-300 group-hover:text-[#C84B31] flex-shrink-0 ml-3 transition-colors" />
+                    <ArrowRight size={16} className="text-gray-300 group-hover:text-[#059669] flex-shrink-0 ml-3 transition-colors" />
                   </Link>
                 );
               })}
@@ -179,7 +179,7 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
                 <div className="mt-4 text-center">
                   <Link
                     href={`/doctors?specialty=${disease.linkedSpecialties[0]}`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#C84B31] text-white text-sm font-medium rounded-lg hover:bg-red-800 transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#059669] text-white text-sm font-medium rounded-lg hover:bg-emerald-800 transition-colors"
                   >
                     {t("View all doctors for this condition", "এই রোগের সব ডাক্তার দেখুন")}
                     <ArrowRight size={14} />
@@ -199,7 +199,7 @@ export default function DiseasePage({ params }: { params: Promise<{ slug: string
                 <Link
                   key={d.slug}
                   href={`/disease/${d.slug}`}
-                  className="px-4 py-2 border border-gray-200 rounded-full text-sm text-gray-600 hover:border-[#C84B31] hover:text-[#C84B31] transition-colors"
+                  className="px-4 py-2 border border-gray-200 rounded-full text-sm text-gray-600 hover:border-[#059669] hover:text-[#059669] transition-colors"
                 >
                   {t(d.nameEn, d.nameBn)}
                 </Link>

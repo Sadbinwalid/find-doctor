@@ -22,16 +22,16 @@ export default function TestsPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="border-b border-gray-100 bg-gradient-to-b from-purple-50 to-white">
+      <div className="border-b border-gray-100 bg-gradient-to-b from-gray-100 to-white">
         <div className="max-w-4xl mx-auto px-4 py-10">
           <nav className="text-xs text-gray-500 mb-4">
-            <Link href="/" className="hover:text-[#C84B31]">{t("Home", "হোম")}</Link>
+            <Link href="/" className="hover:text-[#059669]">{t("Home", "হোম")}</Link>
             {" / "}
             <span className="text-gray-900">{t("Diagnostic Tests", "ডায়াগনস্টিক পরীক্ষা")}</span>
           </nav>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-              <FlaskConical size={20} className="text-purple-600" />
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+              <FlaskConical size={20} className="text-gray-800" />
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
               {t("Diagnostic Tests", "ডায়াগনস্টিক পরীক্ষা")}
@@ -71,13 +71,13 @@ export default function TestsPage() {
               <Link
                 key={test.slug}
                 href={`/test/${test.slug}`}
-                className="group flex items-start gap-4 border border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:bg-purple-50 transition-all"
+                className="group flex items-start gap-4 border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:bg-gray-100 transition-all"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-                  <FlaskConical size={18} className="text-purple-600" />
+                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <FlaskConical size={18} className="text-gray-800" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors">
+                  <h3 className="font-semibold text-gray-900 group-hover:text-gray-900 transition-colors">
                     {t(test.nameEn, test.nameBn)}
                   </h3>
                   {test.commonNamesEn.length > 0 && (
@@ -92,7 +92,7 @@ export default function TestsPage() {
                     {t("Where:", "কোথায়:")} {t(test.facilityType, test.facilityTypeBn)}
                   </p>
                 </div>
-                <ChevronRight size={16} className="text-gray-300 group-hover:text-purple-400 flex-shrink-0 mt-1 transition-colors" />
+                <ChevronRight size={16} className="text-gray-300 group-hover:text-gray-400 flex-shrink-0 mt-1 transition-colors" />
               </Link>
             ))}
           </div>
