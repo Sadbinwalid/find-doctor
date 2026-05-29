@@ -1,5 +1,5 @@
 "use client";
-import { use } from "react";
+import { use, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MapPin, Phone, Star, Award, Clock, CheckCircle, ArrowLeft } from "lucide-react";
@@ -11,6 +11,14 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
   const { id } = use(params);
   const { t } = useLanguage();
   const doctor = doctors.find((d) => d.id === id);
+
+  useEffect(() => {
+    if (!id) return;
+    const stored = localStorage.getItem("recently_visited");
+    const prev: string[] = stored ? JSON.parse(stored) : [];
+    const updated = [id, ...prev.filter((v) => v !== id)].slice(0, 6);
+    localStorage.setItem("recently_visited", JSON.stringify(updated));
+  }, [id]);
 
   if (!doctor) notFound();
 
