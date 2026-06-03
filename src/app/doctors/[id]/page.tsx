@@ -1,8 +1,8 @@
 "use client";
-import { use, useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Phone, Star, Award, Clock, CheckCircle, ArrowLeft } from "lucide-react";
+import { MapPin, Phone, Star, Award, Clock, CheckCircle, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { doctors } from "@/data/doctors";
 import { categories } from "@/data/categories";
@@ -11,6 +11,8 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
   const { id } = use(params);
   const { t } = useLanguage();
   const doctor = doctors.find((d) => d.id === id);
+
+  const [feeOpen, setFeeOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -21,6 +23,46 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
   }, [id]);
 
   if (!doctor) notFound();
+
+  const fee = doctor.fee;
+  const feeBreakdown = [
+    {
+      labelEn: "New Patient",
+      labelBn: "নতুন রোগী",
+      noteEn: "First visit",
+      noteBn: "প্রথম ভিজিট",
+      fee: fee,
+      highlight: true,
+    },
+    {
+      labelEn: "Report Review",
+      labelBn: "রিপোর্ট দেখানো",
+      noteEn: "Within 7 days",
+      noteBn: "৭ দিনের মধ্যে",
+      fee: 0,
+    },
+    {
+      labelEn: "Follow-up Visit",
+      labelBn: "ফলো-আপ ভিজিট",
+      noteEn: "Within 3 weeks",
+      noteBn: "৩ সপ্তাহের মধ্যে",
+      fee: Math.round(fee / 3 / 50) * 50,
+    },
+    {
+      labelEn: "Next Visit",
+      labelBn: "পরবর্তী ভিজিট",
+      noteEn: "Within 6 weeks",
+      noteBn: "৬ সপ্তাহের মধ্যে",
+      fee: Math.round((fee * 2) / 3 / 50) * 50,
+    },
+    {
+      labelEn: "After 6 Weeks",
+      labelBn: "৬ সপ্তাহ পরে",
+      noteEn: "Full fee applies",
+      noteBn: "সম্পূর্ণ ফি প্রযোজ্য",
+      fee: fee,
+    },
+  ];
 
   const category = categories.find((c) => c.slug === doctor.specialty);
 
@@ -105,10 +147,16 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
               <p className="font-bold text-gray-900">{doctor.experienceYears}+</p>
               <p className="text-xs text-gray-500 mt-0.5">{t("Years exp.", "বছরের অভিজ্ঞতা")}</p>
             </div>
-            <div className="text-center">
-              <p className="font-bold text-[#0066CC]">৳{doctor.fee}</p>
+            <button
+              className="text-center group"
+              onClick={() => {
+                setFeeOpen(true);
+                document.getElementById("fee-section")?.scrollIntoView({ behavior: "smooth", block: "center" });
+              }}
+            >
+              <p className="font-bold text-[#0066CC] group-hover:underline">৳{doctor.fee}</p>
               <p className="text-xs text-gray-500 mt-0.5">{t("Per visit", "প্রতি ভিজিট")}</p>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -190,10 +238,42 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
             </div>
 
             {/* Fee card */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+            <div id="fee-section" className="bg-blue-50 border border-blue-100 rounded-xl p-4">
               <p className="text-xs text-[#0066CC] font-medium">{t("Consultation Fee", "পরামর্শ ফি")}</p>
               <p className="text-3xl font-bold text-[#0066CC] mt-1">৳{doctor.fee}</p>
-              <p className="text-xs text-blue-600 mt-0.5">{t("per visit", "প্রতি ভিজিট")}</p>
+              <p className="text-xs text-blue-600 mt-0.5">{t("New patient · per visit", "নতুন রোগী · প্রতি ভিজিট")}</p>
+
+              <button
+                onClick={() => setFeeOpen((v) => !v)}
+                className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-medium text-[#0066CC] border border-blue-200 bg-white rounded-lg py-2 hover:bg-blue-100 transition-colors"
+              >
+                {feeOpen ? (
+                  <>{t("Hide breakdown", "বিস্তারিত লুকান")} <ChevronUp size={13} /></>
+                ) : (
+                  <>{t("See fee details", "ফি বিস্তারিত দেখুন")} <ChevronDown size={13} /></>
+                )}
+              </button>
+
+              {feeOpen && (
+                <div className="mt-3 flex flex-col gap-1.5">
+                  {feeBreakdown.map((row) => (
+                    <div
+                      key={row.labelEn}
+                      className={`flex items-center justify-between rounded-lg px-3 py-2 ${
+                        row.highlight ? "bg-blue-100" : "bg-white border border-blue-100"
+                      }`}
+                    >
+                      <div>
+                        <p className="text-xs font-medium text-gray-800">{t(row.labelEn, row.labelBn)}</p>
+                        <p className="text-[10px] text-gray-400">{t(row.noteEn, row.noteBn)}</p>
+                      </div>
+                      <p className={`text-sm font-bold ${row.fee === 0 ? "text-[#00A86B]" : "text-[#0066CC]"}`}>
+                        {row.fee === 0 ? t("Free", "বিনামূল্যে") : `৳${row.fee}`}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
