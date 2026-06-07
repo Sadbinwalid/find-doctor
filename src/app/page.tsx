@@ -8,6 +8,7 @@ import { doctors } from "@/data/doctors";
 import { locations } from "@/data/locations";
 import CategoryCard from "@/components/CategoryCard";
 import DoctorCard from "@/components/DoctorCard";
+import SymptomSearch from "@/components/SymptomSearch";
 
 export default function HomePage() {
   const { t } = useLanguage();
@@ -150,6 +151,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Symptom Search */}
+      <SymptomSearch />
 
       {/* Categories */}
       <section className="max-w-6xl mx-auto px-4 py-12">

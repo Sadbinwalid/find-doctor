@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Search, SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown, Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { doctors } from "@/data/doctors";
 import { categories } from "@/data/categories";
@@ -14,7 +14,11 @@ function DoctorsPageInner() {
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("q") || "");
-  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
+  const fromSymptoms = searchParams.get("specialties") !== null;
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>(() => {
+    const sp = searchParams.get("specialties");
+    return sp ? sp.split(",").filter(Boolean) : [];
+  });
   const [selectedDivision, setSelectedDivision] = useState(searchParams.get("division") || "");
   const [selectedDistrict, setSelectedDistrict] = useState(searchParams.get("district") || "");
   const [maxFee, setMaxFee] = useState(2000);
@@ -227,6 +231,25 @@ function DoctorsPageInner() {
               )}
             </button>
           </div>
+
+          {/* Symptom search banner */}
+          {fromSymptoms && selectedSpecialties.length > 0 && (
+            <div className="mb-4 bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Info size={14} className="text-[#0066CC] flex-shrink-0" />
+                <p className="text-sm text-[#0066CC]">
+                  {t("Showing doctors matching your symptoms", "আপনার লক্ষণ অনুযায়ী ডাক্তার দেখানো হচ্ছে")}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedSpecialties([])}
+                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1 flex-shrink-0"
+              >
+                <X size={12} />
+                {t("Clear", "মুছুন")}
+              </button>
+            </div>
+          )}
 
           {/* Sort bar */}
           <div className="flex items-center justify-between mb-4 gap-3">

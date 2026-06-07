@@ -2,7 +2,7 @@
 import { use, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Phone, Star, Award, Clock, CheckCircle, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, Phone, Star, Award, Clock, CheckCircle, ArrowLeft, ChevronDown, ChevronUp, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { doctors } from "@/data/doctors";
 import { categories } from "@/data/categories";
@@ -104,6 +104,12 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
                 <div>
                   <h1 className="text-xl font-bold text-gray-900">{t(doctor.nameEn, doctor.nameBn)}</h1>
                   <p className="text-sm text-gray-500">{t(doctor.nameBn, doctor.nameEn)}</p>
+                  {doctor.verified && (
+                    <span className="inline-flex items-center gap-1 mt-1.5 bg-blue-50 border border-blue-200 text-[#0066CC] text-xs font-medium px-2.5 py-1 rounded-full">
+                      <ShieldCheck size={11} strokeWidth={2.5} />
+                      {t("Verified by FindDoctor", "FindDoctor দ্বারা যাচাইকৃত")}
+                    </span>
+                  )}
                 </div>
                 <span
                   className={`text-xs font-medium px-3 py-1 rounded-full flex-shrink-0 ${

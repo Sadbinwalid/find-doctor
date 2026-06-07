@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Doctor } from "@/data/doctors";
 import { useLanguage } from "@/context/LanguageContext";
-import { MapPin, Star, Stethoscope, Phone } from "lucide-react";
+import { MapPin, Star, Stethoscope, Phone, Check } from "lucide-react";
 import { categories } from "@/data/categories";
 
 export default function DoctorCard({ doctor }: { doctor: Doctor }) {
@@ -21,11 +21,18 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
       {/* Header */}
       <div className="flex gap-4 items-start">
         {/* Avatar */}
-        <div
-          className="w-14 h-14 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0"
-          style={{ backgroundColor: category?.color || "#0066CC" }}
-        >
-          {initials}
+        <div className="relative flex-shrink-0">
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center text-white font-semibold text-lg"
+            style={{ backgroundColor: category?.color || "#0066CC" }}
+          >
+            {initials}
+          </div>
+          {doctor.verified && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-[#0066CC] rounded-full flex items-center justify-center border-2 border-white">
+              <Check size={10} className="text-white" strokeWidth={3} />
+            </div>
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
