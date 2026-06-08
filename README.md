@@ -1,3 +1,11 @@
+# DoctorBD — Find the Right Doctor in Bangladesh
+
+A bilingual (Bengali/English) doctor discovery platform for Bangladesh. See [PRD.md](./PRD.md) for the full product requirements.
+
+**Active development branch:** `doctor-site`
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

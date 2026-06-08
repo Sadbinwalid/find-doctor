@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 bg-[#0066CC] rounded-md flex items-center justify-center">
+              <div className="w-7 h-7 bg-[#059669] rounded-md flex items-center justify-center">
                 <span className="text-white font-bold text-xs">D</span>
               </div>
               <span className="font-bold text-gray-900">DoctorBD</span>
@@ -34,7 +34,7 @@ export default function Footer() {
                 { href: "/about", en: "About Us", bn: "আমাদের সম্পর্কে" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-xs text-gray-500 hover:text-[#0066CC]">
+                  <Link href={l.href} className="text-xs text-gray-500 hover:text-[#059669]">
                     {t(l.en, l.bn)}
                   </Link>
                 </li>
@@ -49,7 +49,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-2">
               {["Dhaka", "Chattogram", "Rajshahi", "Sylhet", "Khulna"].map((d) => (
                 <li key={d}>
-                  <Link href={`/doctors?division=${d}`} className="text-xs text-gray-500 hover:text-[#0066CC]">
+                  <Link href={`/doctors?division=${d}`} className="text-xs text-gray-500 hover:text-[#059669]">
                     {d}
                   </Link>
                 </li>
@@ -62,7 +62,7 @@ export default function Footer() {
               {t("Emergency", "জরুরি")}
             </h4>
             <p className="text-xs text-gray-500">{t("National Health Helpline", "জাতীয় স্বাস্থ্য হেল্পলাইন")}</p>
-            <p className="text-xl font-bold text-[#0066CC] mt-1">16457</p>
+            <p className="text-xl font-bold text-[#059669] mt-1">16457</p>
             <p className="text-xs text-gray-400 mt-1">{t("24/7 available", "২৪/৭ উপলব্ধ")}</p>
           </div>
         </div>
