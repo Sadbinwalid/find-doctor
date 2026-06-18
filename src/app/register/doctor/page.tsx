@@ -346,7 +346,7 @@ export default function DoctorRegisterPage() {
                     className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#0066CC] bg-white disabled:bg-gray-50 disabled:text-gray-400"
                   >
                     <option value="">{t("Select", "বেছে নিন")}</option>
-                    {upazilas.map((u) => <option key={u.name} value={u.name}>{u.name}</option>)}
+                    {upazilas.map((u) => <option key={u} value={u}>{u}</option>)}
                   </select>
                 </div>
                 <div>

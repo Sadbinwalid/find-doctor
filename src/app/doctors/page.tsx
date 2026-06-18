@@ -232,6 +232,91 @@ function DoctorsPageInner() {
             </button>
           </div>
 
+          {/* Mobile filter panel */}
+          {showFilters && (
+            <div className="md:hidden bg-white border border-gray-200 rounded-xl p-4 mb-4 flex flex-col gap-4">
+              <div>
+                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t("Specialty", "বিশেষজ্ঞতা")}</h3>
+                <div className="grid grid-cols-2 gap-y-2 gap-x-3">
+                  {categories.map((cat) => (
+                    <label key={cat.slug} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedSpecialties.includes(cat.slug)}
+                        onChange={() => toggleSpecialty(cat.slug)}
+                        className="w-3.5 h-3.5 accent-[#0066CC]"
+                      />
+                      <span className="text-xs text-gray-600">{t(cat.nameEn, cat.nameBn)}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t("Division", "বিভাগ")}</h3>
+                <select
+                  value={selectedDivision}
+                  onChange={(e) => { setSelectedDivision(e.target.value); setSelectedDistrict(""); }}
+                  className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-2 outline-none bg-white text-gray-700"
+                >
+                  <option value="">{t("All", "সব")}</option>
+                  {locations.map((l) => (
+                    <option key={l.division} value={l.division}>{l.division}</option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedDivision && (
+                <div>
+                  <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t("District", "জেলা")}</h3>
+                  <select
+                    value={selectedDistrict}
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-2 outline-none bg-white text-gray-700"
+                  >
+                    <option value="">{t("All", "সব")}</option>
+                    {districts.map((d) => (
+                      <option key={d.name} value={d.name}>{d.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">
+                  {t("Max Fee", "সর্বোচ্চ ফি")}: <span className="text-[#0066CC] font-bold">৳{maxFee}</span>
+                </h3>
+                <input
+                  type="range"
+                  min={200}
+                  max={2000}
+                  step={100}
+                  value={maxFee}
+                  onChange={(e) => setMaxFee(Number(e.target.value))}
+                  className="w-full accent-[#0066CC]"
+                />
+                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <span>৳200</span>
+                  <span>৳2000</span>
+                </div>
+              </div>
+
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={() => {
+                    setSelectedSpecialties([]);
+                    setSelectedDivision("");
+                    setSelectedDistrict("");
+                    setMaxFee(2000);
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 text-left"
+                >
+                  {t("Clear all filters", "সব ফিল্টার মুছুন")} ({activeFiltersCount})
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Symptom search banner */}
           {fromSymptoms && selectedSpecialties.length > 0 && (
             <div className="mb-4 bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 flex items-center justify-between gap-3">

@@ -48,7 +48,7 @@ function formatDate(dateStr: string, lang: "en" | "bn") {
 
 export default function ProfilePage() {
   const { t, lang } = useLanguage();
-  const { logout } = useAuth();
+  const { logout, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [recentlyVisited, setRecentlyVisited] = useState<string[]>([]);
   const [showAllAppts, setShowAllAppts] = useState(false);
@@ -58,6 +58,10 @@ export default function ProfilePage() {
   const [newCondition, setNewCondition] = useState("");
 
   useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/auth");
+      return;
+    }
     const rv = localStorage.getItem("recently_visited");
     if (rv) setRecentlyVisited(JSON.parse(rv));
     const pd = localStorage.getItem("profile_data");
@@ -66,7 +70,7 @@ export default function ProfilePage() {
       setProfile(parsed);
       setForm(parsed);
     }
-  }, []);
+  }, [isLoading, isAuthenticated, router]);
 
   const openEdit = () => {
     setForm({ ...profile });
@@ -90,6 +94,14 @@ export default function ProfilePage() {
   const removeCondition = (c: string) => {
     setForm((f) => ({ ...f, conditions: f.conditions.filter((x) => x !== c) }));
   };
+
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-gray-200 border-t-[#0066CC] rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const savedDoctors = doctors.filter((d) => SAVED_DOCTOR_IDS.includes(d.id));
   const preferredCategories = categories.filter((c) => PREFERRED_SPECIALTIES.includes(c.slug));
