@@ -30,6 +30,7 @@ export default function Navbar() {
               { href: "/doctors", en: "Find Doctors", bn: "ডাক্তার খুঁজুন" },
               { href: "/specialties", en: "Specialties", bn: "বিশেষজ্ঞতা" },
               { href: "/about", en: "About", bn: "আমাদের সম্পর্কে" },
+              { href: "/verify", en: "Verification", bn: "যাচাইকরণ" },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -46,7 +47,13 @@ export default function Navbar() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/register/doctor"
+              className="hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-[#0066CC] text-white hover:bg-blue-700 transition-colors"
+            >
+              {t("For Doctors", "ডাক্তারদের জন্য")}
+            </Link>
             <Link
               href="/profile"
               className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${

@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
+import OnboardingModal from "@/components/OnboardingModal";
 
 const hind = Hind_Siliguri({
   weight: ["300", "400", "500", "600", "700"],
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-gray-50">
         <LanguageProvider>
           <Navbar />
+          <OnboardingModal />
           <main className="flex-1 pb-16 md:pb-0">{children}</main>
           <div className="hidden md:block"><Footer /></div>
           <BottomNav />
