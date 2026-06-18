@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   MapPin, Phone, Star, Heart, Calendar,
-  ChevronRight, Stethoscope, Clock, CheckCircle, XCircle, History, Pencil, X, Plus,
+  ChevronRight, Stethoscope, Clock, CheckCircle, XCircle, History, Pencil, X, Plus, LogOut,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import { doctors } from "@/data/doctors";
 import { categories } from "@/data/categories";
 
@@ -46,6 +48,8 @@ function formatDate(dateStr: string, lang: "en" | "bn") {
 
 export default function ProfilePage() {
   const { t, lang } = useLanguage();
+  const { logout } = useAuth();
+  const router = useRouter();
   const [recentlyVisited, setRecentlyVisited] = useState<string[]>([]);
   const [showAllAppts, setShowAllAppts] = useState(false);
   const [profile, setProfile] = useState<ProfileData>(DEFAULT_PROFILE);
@@ -166,13 +170,22 @@ export default function ProfilePage() {
             <span className="text-xs text-gray-400">
               {t(`Member since ${profile.memberSince}`, `${profile.memberSince} থেকে সদস্য`)}
             </span>
-            <button
-              onClick={openEdit}
-              className="flex items-center gap-1.5 text-xs font-medium text-[#0066CC] border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
-            >
-              <Pencil size={12} />
-              {t("Edit Profile", "প্রোফাইল সম্পাদনা")}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={openEdit}
+                className="flex items-center gap-1.5 text-xs font-medium text-[#0066CC] border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+              >
+                <Pencil size={12} />
+                {t("Edit Profile", "প্রোফাইল সম্পাদনা")}
+              </button>
+              <button
+                onClick={() => { logout(); router.push("/"); }}
+                className="flex items-center gap-1.5 text-xs font-medium text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={12} />
+                {t("Sign Out", "সাইন আউট")}
+              </button>
+            </div>
           </div>
         </div>
 

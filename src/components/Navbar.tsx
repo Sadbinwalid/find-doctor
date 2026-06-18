@@ -2,10 +2,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import { UserCircle, LogIn } from "lucide-react";
 
 export default function Navbar() {
   const { lang, toggle, t } = useLanguage();
+  const { isAuthenticated } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -46,36 +48,44 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Actions */}
+          {/* Actions — conditional on auth state */}
           <div className="flex items-center gap-2">
-            <Link
-              href="/auth"
-              className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
-                pathname === "/auth"
-                  ? "bg-[#0066CC] text-white"
-                  : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
-              }`}
-            >
-              <LogIn size={14} />
-              {t("Sign In", "সাইন ইন")}
-            </Link>
+            {/* Always visible: For Doctors */}
             <Link
               href="/register/doctor"
               className="hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-[#0066CC] text-white hover:bg-blue-700 transition-colors"
             >
               {t("For Doctors", "ডাক্তারদের জন্য")}
             </Link>
-            <Link
-              href="/profile"
-              className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
-                pathname === "/profile"
-                  ? "bg-[#0066CC] text-white"
-                  : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
-              }`}
-            >
-              <UserCircle size={15} />
-              {t("Profile", "প্রোফাইল")}
-            </Link>
+
+            {/* Show Sign In when logged out, Profile when logged in */}
+            {isAuthenticated ? (
+              <Link
+                href="/profile"
+                className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
+                  pathname === "/profile"
+                    ? "bg-[#0066CC] text-white"
+                    : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
+                }`}
+              >
+                <UserCircle size={15} />
+                {t("Profile", "প্রোফাইল")}
+              </Link>
+            ) : (
+              <Link
+                href="/auth"
+                className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
+                  pathname === "/auth"
+                    ? "bg-[#0066CC] text-white"
+                    : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
+                }`}
+              >
+                <LogIn size={14} />
+                {t("Sign In", "সাইন ইন")}
+              </Link>
+            )}
+
+            {/* Language toggle */}
             <button
               onClick={toggle}
               className="text-sm font-medium px-3 py-1.5 border border-gray-200 rounded-md text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC] transition-colors"
@@ -84,7 +94,6 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-
       </div>
     </nav>
   );

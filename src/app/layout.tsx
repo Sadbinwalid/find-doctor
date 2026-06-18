@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${hind.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-gray-50">
+        <AuthProvider>
         <LanguageProvider>
           <Navbar />
           <OnboardingModal />
@@ -34,6 +36,7 @@ export default function RootLayout({
           <div className="hidden md:block"><Footer /></div>
           <BottomNav />
         </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

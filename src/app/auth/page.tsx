@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Phone, Mail, ArrowLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import { locations } from "@/data/locations";
 
 type Step = "method" | "phone" | "otp" | "email" | "profile" | "location" | "done";
@@ -12,6 +13,7 @@ const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export default function AuthPage() {
   const { t } = useLanguage();
+  const { login, isAuthenticated } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState<Step>("method");
   const [isSignIn, setIsSignIn] = useState(false);
@@ -29,10 +31,8 @@ export default function AuthPage() {
   const [district, setDistrict] = useState("");
 
   useEffect(() => {
-    if (localStorage.getItem("user_onboarded") && step === "method") {
-      router.replace("/profile");
-    }
-  }, [router, step]);
+    if (isAuthenticated) router.replace("/profile");
+  }, [isAuthenticated, router]);
 
   const districts = division
     ? (locations.find((l) => l.division === division)?.districts ?? [])
@@ -61,7 +61,7 @@ export default function AuthPage() {
       ...(phone && { phone }),
     };
     localStorage.setItem("profile_data", JSON.stringify(merged));
-    localStorage.setItem("user_onboarded", "true");
+    login();
     setStep("done");
     setTimeout(() => router.push("/profile"), 2000);
   };
