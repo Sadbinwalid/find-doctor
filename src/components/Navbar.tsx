@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
-import { UserCircle } from "lucide-react";
+import { UserCircle, LogIn } from "lucide-react";
 
 export default function Navbar() {
   const { lang, toggle, t } = useLanguage();
@@ -48,6 +48,17 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            <Link
+              href="/auth"
+              className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
+                pathname === "/auth"
+                  ? "bg-[#0066CC] text-white"
+                  : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
+              }`}
+            >
+              <LogIn size={14} />
+              {t("Sign In", "সাইন ইন")}
+            </Link>
             <Link
               href="/register/doctor"
               className="hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md bg-[#0066CC] text-white hover:bg-blue-700 transition-colors"

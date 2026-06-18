@@ -152,6 +152,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Doctor CTA Banner */}
+      <section className="bg-[#0066CC] border-b border-blue-700">
+        <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left">
+            <p className="text-white font-bold text-lg leading-tight">
+              {t("Are you a doctor?", "আপনি কি একজন ডাক্তার?")}
+            </p>
+            <p className="text-blue-200 text-sm mt-0.5">
+              {t("Join 1,200+ verified doctors — reach patients across Bangladesh.", "১,২০০+ যাচাইকৃত ডাক্তারদের সাথে যোগ দিন — বাংলাদেশ জুড়ে রোগীদের কাছে পৌঁছান।")}
+            </p>
+          </div>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <a
+              href="/verify"
+              className="text-sm font-medium text-blue-200 hover:text-white border border-blue-400 px-4 py-2 rounded-xl hover:border-white transition-colors"
+            >
+              {t("How it works", "কিভাবে কাজ করে")}
+            </a>
+            <a
+              href="/register/doctor"
+              className="text-sm font-bold bg-white text-[#0066CC] px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors"
+            >
+              {t("Register Now", "এখনই নিবন্ধন করুন")}
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Symptom Search */}
       <SymptomSearch />
 
