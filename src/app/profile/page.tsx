@@ -5,11 +5,20 @@ import { useRouter } from "next/navigation";
 import {
   MapPin, Phone, Star, Heart, Calendar,
   ChevronRight, Stethoscope, Clock, CheckCircle, XCircle, History, Pencil, X, Plus, LogOut,
+  FileText, Shield, AlertCircle, BadgeCheck,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { doctors } from "@/data/doctors";
 import { categories } from "@/data/categories";
+
+type DoctorApplication = {
+  appId: string;
+  nameEn: string;
+  specialty: string;
+  submittedAt: string;
+  status?: "pending" | "approved" | "rejected";
+};
 
 const SAVED_DOCTOR_IDS = ["1", "4", "10"];
 const PREFERRED_SPECIALTIES = ["cardiologist", "pediatrician", "ophthalmologist", "general-physician"];
@@ -56,6 +65,7 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<ProfileData>(DEFAULT_PROFILE);
   const [newCondition, setNewCondition] = useState("");
+  const [doctorApp, setDoctorApp] = useState<DoctorApplication | null>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -69,6 +79,23 @@ export default function ProfilePage() {
       const parsed = JSON.parse(pd);
       setProfile(parsed);
       setForm(parsed);
+    }
+    // Check if user has submitted a doctor application
+    const apps = localStorage.getItem("pending_doctor_registrations");
+    if (apps) {
+      const list: DoctorApplication[] = JSON.parse(apps);
+      if (list.length > 0) {
+        const latest = list.sort((a, b) =>
+          new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+        )[0];
+        setDoctorApp(latest);
+      }
+    }
+    // Auto-open edit modal if navigated with ?edit=true
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("edit") === "true") {
+      setNewCondition("");
+      setEditing(true);
     }
   }, [isLoading, isAuthenticated, router]);
 
@@ -399,27 +426,122 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Quick Links */}
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
-              <h2 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <ChevronRight size={16} className="text-[#0066CC]" />
-                {t("Quick Actions", "দ্রুত অ্যাকশন")}
-              </h2>
-              <div className="flex flex-col gap-2">
+            {/* Doctor Verification Status */}
+            {doctorApp && (
+              <div className={`border rounded-xl p-4 ${
+                doctorApp.status === "approved"
+                  ? "bg-green-50 border-green-200"
+                  : doctorApp.status === "rejected"
+                  ? "bg-red-50 border-red-200"
+                  : "bg-amber-50 border-amber-200"
+              }`}>
+                <p className="text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5
+                  ${doctorApp.status === 'approved' ? 'text-green-700' : doctorApp.status === 'rejected' ? 'text-red-600' : 'text-amber-700'}">
+                  {doctorApp.status === "approved" ? (
+                    <BadgeCheck size={13} className="text-green-600" />
+                  ) : doctorApp.status === "rejected" ? (
+                    <XCircle size={13} className="text-red-500" />
+                  ) : (
+                    <AlertCircle size={13} className="text-amber-600" />
+                  )}
+                  {t("Doctor Verification", "ডাক্তার যাচাইকরণ")}
+                </p>
+                <p className="text-sm font-semibold text-gray-900">
+                  {doctorApp.status === "approved"
+                    ? t("Application Approved", "আবেদন অনুমোদিত")
+                    : doctorApp.status === "rejected"
+                    ? t("Application Rejected", "আবেদন প্রত্যাখ্যাত")
+                    : t("Under Review", "পর্যালোচনায় রয়েছে")}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {t("App ID", "আবেদন আইডি")}: <span className="font-mono font-medium">{doctorApp.appId}</span>
+                </p>
+                {doctorApp.status === "approved" && (
+                  <p className="text-xs text-green-700 mt-2 leading-relaxed">
+                    {t("Your profile has been verified by FindDoctor.", "আপনার প্রোফাইল FindDoctor দ্বারা যাচাই করা হয়েছে।")}
+                  </p>
+                )}
+                {doctorApp.status === "rejected" && (
+                  <Link href="/register/doctor" className="mt-2 text-xs font-medium text-red-600 hover:underline block">
+                    {t("Resubmit application →", "আবার আবেদন করুন →")}
+                  </Link>
+                )}
+                {(!doctorApp.status || doctorApp.status === "pending") && (
+                  <p className="text-xs text-amber-700 mt-2 leading-relaxed">
+                    {t("We're reviewing your documents. This usually takes 2–3 business days.", "আমরা আপনার নথি পর্যালোচনা করছি। সাধারণত ২–৩ কার্যদিবস লাগে।")}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Account & Legal */}
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="px-5 pt-4 pb-2">
+                <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {t("Account", "অ্যাকাউন্ট")}
+                </h2>
+              </div>
+              <div className="flex flex-col">
+                <button
+                  onClick={openEdit}
+                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <Pencil size={15} className="text-gray-400" />
+                    <span className="text-sm text-gray-700">{t("Edit Profile", "প্রোফাইল সম্পাদনা")}</span>
+                  </div>
+                  <ChevronRight size={14} className="text-gray-300" />
+                </button>
+                <div className="border-t border-gray-100 mx-4" />
                 <Link
                   href="/doctors"
-                  className="text-sm text-gray-700 hover:text-[#0066CC] hover:bg-blue-50 px-3 py-2 rounded-lg flex items-center justify-between transition-colors"
+                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors"
                 >
-                  {t("Find a Doctor", "ডাক্তার খুঁজুন")}
-                  <ChevronRight size={14} />
+                  <div className="flex items-center gap-3">
+                    <Stethoscope size={15} className="text-gray-400" />
+                    <span className="text-sm text-gray-700">{t("Find a Doctor", "ডাক্তার খুঁজুন")}</span>
+                  </div>
+                  <ChevronRight size={14} className="text-gray-300" />
                 </Link>
+              </div>
+
+              <div className="px-5 pt-4 pb-2 border-t border-gray-100">
+                <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {t("Legal", "আইনি")}
+                </h2>
+              </div>
+              <div className="flex flex-col">
                 <Link
-                  href="/specialties"
-                  className="text-sm text-gray-700 hover:text-[#0066CC] hover:bg-blue-50 px-3 py-2 rounded-lg flex items-center justify-between transition-colors"
+                  href="/terms"
+                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors"
                 >
-                  {t("Browse Specialties", "বিশেষজ্ঞতা দেখুন")}
-                  <ChevronRight size={14} />
+                  <div className="flex items-center gap-3">
+                    <FileText size={15} className="text-gray-400" />
+                    <span className="text-sm text-gray-700">{t("Terms & Conditions", "শর্তাবলী")}</span>
+                  </div>
+                  <ChevronRight size={14} className="text-gray-300" />
                 </Link>
+                <div className="border-t border-gray-100 mx-4" />
+                <Link
+                  href="/privacy"
+                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Shield size={15} className="text-gray-400" />
+                    <span className="text-sm text-gray-700">{t("Privacy Policy", "গোপনীয়তা নীতি")}</span>
+                  </div>
+                  <ChevronRight size={14} className="text-gray-300" />
+                </Link>
+              </div>
+
+              <div className="border-t border-gray-100 p-4">
+                <button
+                  onClick={() => { logout(); router.push("/"); }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-red-500 border border-red-200 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut size={14} />
+                  {t("Sign Out", "সাইন আউট")}
+                </button>
               </div>
             </div>
           </div>
