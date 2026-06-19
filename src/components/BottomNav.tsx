@@ -2,74 +2,64 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Home, Stethoscope, LayoutGrid, UserCircle, LogIn,
-  X, Pencil, LogOut, FileText, Shield, ChevronRight,
-} from "lucide-react";
+import { Home, Stethoscope, LayoutGrid, UserCircle, LogIn, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 
-function SheetItem({
-  icon,
-  iconBg,
-  label,
-  labelClass = "text-gray-800",
-  onClick,
-}: {
-  icon: React.ReactNode;
-  iconBg: string;
-  label: string;
-  labelClass?: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center justify-between px-3 py-3.5 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors"
-    >
-      <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-full ${iconBg} flex items-center justify-center flex-shrink-0`}>
-          {icon}
-        </div>
-        <span className={`text-sm font-medium ${labelClass}`}>{label}</span>
-      </div>
-      <ChevronRight size={15} className="text-gray-300" />
-    </button>
-  );
-}
+type ProfileSnap = { name: string; initials: string; location: string };
+type DoctorSnap = { appId: string; status?: "pending" | "approved" | "rejected" } | null;
 
 export default function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const { t } = useLanguage();
+  const { lang, toggle, t } = useLanguage();
   const { isAuthenticated, logout } = useAuth();
+
   const [showSheet, setShowSheet] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userInitials, setUserInitials] = useState("U");
+  const [profile, setProfile] = useState<ProfileSnap>({ name: "", initials: "U", location: "" });
+  const [doctorApp, setDoctorApp] = useState<DoctorSnap>(null);
 
   useEffect(() => {
     if (!showSheet) return;
-    const pd = localStorage.getItem("profile_data");
-    if (pd) {
-      try {
-        const parsed = JSON.parse(pd);
-        const name: string = parsed.nameEn || "";
-        setUserName(name);
-        const initials = name.split(" ").filter(Boolean).slice(0, 2).map((w: string) => w[0]).join("");
-        setUserInitials(initials || "U");
-      } catch {
-        // ignore parse errors
+    try {
+      const pd = localStorage.getItem("profile_data");
+      if (pd) {
+        const p = JSON.parse(pd);
+        const name: string = p.nameEn || "";
+        const initials = name.split(" ").filter(Boolean).slice(0, 2).map((w: string) => w[0]).join("") || "U";
+        setProfile({ name, initials, location: [p.districtEn, p.divisionEn].filter(Boolean).join(", ") });
       }
-    }
+      const apps = localStorage.getItem("pending_doctor_registrations");
+      if (apps) {
+        const list = JSON.parse(apps);
+        if (list.length > 0) {
+          const latest = [...list].sort(
+            (a: { submittedAt: string }, b: { submittedAt: string }) =>
+              new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+          )[0];
+          setDoctorApp({ appId: latest.appId, status: latest.status });
+        }
+      }
+    } catch {}
   }, [showSheet]);
+
+  const close = () => setShowSheet(false);
+
+  const doctorStatusLabel =
+    doctorApp?.status === "approved" ? t("Approved", "অনুমোদিত") :
+    doctorApp?.status === "rejected" ? t("Rejected", "প্রত্যাখ্যাত") :
+    t("Under Review", "পর্যালোচনায়");
+
+  const doctorStatusColor =
+    doctorApp?.status === "approved" ? "text-green-700 bg-green-50" :
+    doctorApp?.status === "rejected" ? "text-red-500 bg-red-50" :
+    "text-amber-600 bg-amber-50";
 
   const staticNavItems = [
     { href: "/", icon: Home, en: "Home", bn: "হোম" },
     { href: "/doctors", icon: Stethoscope, en: "Doctors", bn: "ডাক্তার" },
     { href: "/specialties", icon: LayoutGrid, en: "Specialties", bn: "বিশেষজ্ঞ" },
   ];
-
-  const close = () => setShowSheet(false);
 
   return (
     <>
@@ -81,14 +71,10 @@ export default function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
-                  active ? "text-[#0066CC]" : "text-gray-400"
-                }`}
+                className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${active ? "text-[#0066CC]" : "text-gray-400"}`}
               >
                 <Icon size={21} strokeWidth={active ? 2.5 : 1.75} />
-                <span className={`text-[10px] leading-none ${active ? "font-semibold" : ""}`}>
-                  {t(en, bn)}
-                </span>
+                <span className={`text-[10px] leading-none ${active ? "font-semibold" : ""}`}>{t(en, bn)}</span>
               </Link>
             );
           })}
@@ -121,85 +107,102 @@ export default function BottomNav() {
         </div>
       </nav>
 
-      {/* Profile bottom sheet */}
+      {/* Profile sheet — LinkedIn style */}
       {showSheet && (
         <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-[60] bg-black/40"
-            onClick={close}
-          />
-
-          {/* Sheet */}
+          <div className="fixed inset-0 z-[60] bg-black/40" onClick={close} />
           <div className="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-2xl shadow-2xl">
+
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 bg-gray-200 rounded-full" />
             </div>
 
-            {/* Mini profile header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#0066CC] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                  {userInitials}
+            {/* Profile card */}
+            <div className="px-5 pt-3 pb-4 border-b border-gray-100">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-14 h-14 rounded-full bg-[#0066CC] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                    {profile.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-gray-900 leading-snug">
+                      {profile.name || t("My Account", "আমার অ্যাকাউন্ট")}
+                    </p>
+                    {profile.location && (
+                      <p className="text-xs text-gray-500 mt-0.5">{profile.location}</p>
+                    )}
+                    <p className="text-xs text-gray-400">{t("DoctorBD Member", "DoctorBD সদস্য")}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900 leading-tight">
-                    {userName || t("My Account", "আমার অ্যাকাউন্ট")}
-                  </p>
-                  <p className="text-xs text-gray-400">{t("DoctorBD Member", "DoctorBD সদস্য")}</p>
-                </div>
+                <button onClick={close} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors flex-shrink-0">
+                  <X size={17} />
+                </button>
               </div>
               <button
-                onClick={close}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
+                onClick={() => { close(); router.push("/profile"); }}
+                className="w-full text-center text-sm font-semibold text-[#0066CC] border border-[#0066CC] rounded-xl py-2 hover:bg-blue-50 transition-colors"
               >
-                <X size={17} />
+                {t("View profile", "প্রোফাইল দেখুন")}
               </button>
             </div>
 
-            {/* Menu items */}
-            <div className="px-3 py-2">
-              <SheetItem
-                icon={<UserCircle size={17} className="text-[#0066CC]" />}
-                iconBg="bg-blue-50"
-                label={t("View Profile", "প্রোফাইল দেখুন")}
-                onClick={() => { close(); router.push("/profile"); }}
-              />
-              <SheetItem
-                icon={<Pencil size={15} className="text-[#0066CC]" />}
-                iconBg="bg-blue-50"
-                label={t("Edit Profile", "প্রোফাইল সম্পাদনা")}
+            {/* Account section */}
+            <div className="py-2">
+              <p className="px-5 pt-2 pb-1 text-xs font-bold text-gray-900">
+                {t("Account", "অ্যাকাউন্ট")}
+              </p>
+              <button
                 onClick={() => { close(); router.push("/profile?edit=true"); }}
-              />
-
-              <div className="my-1 h-px bg-gray-100 mx-2" />
-
-              <SheetItem
-                icon={<FileText size={15} className="text-gray-500" />}
-                iconBg="bg-gray-100"
-                label={t("Terms & Conditions", "শর্তাবলী")}
+                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                {t("Settings & Privacy", "সেটিংস ও গোপনীয়তা")}
+              </button>
+              <button
+                onClick={() => { toggle(); close(); }}
+                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                {t("Language: English", "Language: বাংলা")}
+              </button>
+              <button
                 onClick={() => { close(); router.push("/terms"); }}
-              />
-              <SheetItem
-                icon={<Shield size={15} className="text-gray-500" />}
-                iconBg="bg-gray-100"
-                label={t("Privacy Policy", "গোপনীয়তা নীতি")}
+                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                {t("Terms & Conditions", "শর্তাবলী")}
+              </button>
+              <button
                 onClick={() => { close(); router.push("/privacy"); }}
-              />
-
-              <div className="my-1 h-px bg-gray-100 mx-2" />
-
-              <SheetItem
-                icon={<LogOut size={15} className="text-red-500" />}
-                iconBg="bg-red-50"
-                label={t("Sign Out", "সাইন আউট")}
-                labelClass="text-red-500"
-                onClick={() => { logout(); router.push("/"); close(); }}
-              />
+                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                {t("Privacy Policy", "গোপনীয়তা নীতি")}
+              </button>
             </div>
 
-            {/* Safe area spacing */}
+            {/* Doctor verification status */}
+            {doctorApp && (
+              <div className="border-t border-gray-100 py-2">
+                <p className="px-5 pt-2 pb-1 text-xs font-bold text-gray-900">
+                  {t("Manage", "পরিচালনা")}
+                </p>
+                <div className="px-5 py-2 flex items-center justify-between">
+                  <span className="text-sm text-gray-600">{t("Doctor Verification", "ডাক্তার যাচাইকরণ")}</span>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${doctorStatusColor}`}>
+                    {doctorStatusLabel}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Sign out */}
+            <div className="border-t border-gray-100 py-2">
+              <button
+                onClick={() => { logout(); router.push("/"); close(); }}
+                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                {t("Sign out", "সাইন আউট")}
+              </button>
+            </div>
+
             <div className="h-6" />
           </div>
         </>
