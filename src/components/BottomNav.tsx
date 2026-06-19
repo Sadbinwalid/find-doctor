@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Stethoscope, LayoutGrid, UserCircle, LogIn, X } from "lucide-react";
+import { Home, Stethoscope, LayoutGrid, UserCircle, LogIn, X, ClipboardList, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 
 type ProfileSnap = { name: string; initials: string; location: string };
-type DoctorSnap = { appId: string; status?: "pending" | "approved" | "rejected" } | null;
+type PendingDoc = { appId: string; nameEn: string };
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -17,7 +17,7 @@ export default function BottomNav() {
 
   const [showSheet, setShowSheet] = useState(false);
   const [profile, setProfile] = useState<ProfileSnap>({ name: "", initials: "U", location: "" });
-  const [doctorApp, setDoctorApp] = useState<DoctorSnap>(null);
+  const [pendingDocs, setPendingDocs] = useState<PendingDoc[]>([]);
 
   useEffect(() => {
     if (!showSheet) return;
@@ -31,29 +31,15 @@ export default function BottomNav() {
       }
       const apps = localStorage.getItem("pending_doctor_registrations");
       if (apps) {
-        const list = JSON.parse(apps);
-        if (list.length > 0) {
-          const latest = [...list].sort(
-            (a: { submittedAt: string }, b: { submittedAt: string }) =>
-              new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-          )[0];
-          setDoctorApp({ appId: latest.appId, status: latest.status });
-        }
+        const list: Array<{ appId: string; nameEn: string; status?: string }> = JSON.parse(apps);
+        const pending = list.filter((a) => !a.status || a.status === "pending");
+        setPendingDocs(pending.map((a) => ({ appId: a.appId, nameEn: a.nameEn })));
       }
     } catch {}
   }, [showSheet]);
 
   const close = () => setShowSheet(false);
-
-  const doctorStatusLabel =
-    doctorApp?.status === "approved" ? t("Approved", "অনুমোদিত") :
-    doctorApp?.status === "rejected" ? t("Rejected", "প্রত্যাখ্যাত") :
-    t("Under Review", "পর্যালোচনায়");
-
-  const doctorStatusColor =
-    doctorApp?.status === "approved" ? "text-green-700 bg-green-50" :
-    doctorApp?.status === "rejected" ? "text-red-500 bg-red-50" :
-    "text-amber-600 bg-amber-50";
+  const pendingCount = pendingDocs.length;
 
   const staticNavItems = [
     { href: "/", icon: Home, en: "Home", bn: "হোম" },
@@ -82,11 +68,16 @@ export default function BottomNav() {
           {isAuthenticated ? (
             <button
               onClick={() => setShowSheet(true)}
-              className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
+              className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors relative ${
                 pathname === "/profile" ? "text-[#0066CC]" : "text-gray-400"
               }`}
             >
-              <UserCircle size={21} strokeWidth={pathname === "/profile" ? 2.5 : 1.75} />
+              <div className="relative">
+                <UserCircle size={21} strokeWidth={pathname === "/profile" ? 2.5 : 1.75} />
+                {pendingCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-amber-500 border border-white rounded-full" />
+                )}
+              </div>
               <span className={`text-[10px] leading-none ${pathname === "/profile" ? "font-semibold" : ""}`}>
                 {t("Profile", "প্রোফাইল")}
               </span>
@@ -107,7 +98,7 @@ export default function BottomNav() {
         </div>
       </nav>
 
-      {/* Profile sheet — LinkedIn style */}
+      {/* Profile bottom sheet */}
       {showSheet && (
         <>
           <div className="fixed inset-0 z-[60] bg-black/40" onClick={close} />
@@ -129,9 +120,7 @@ export default function BottomNav() {
                     <p className="text-sm font-bold text-gray-900 leading-snug">
                       {profile.name || t("My Account", "আমার অ্যাকাউন্ট")}
                     </p>
-                    {profile.location && (
-                      <p className="text-xs text-gray-500 mt-0.5">{profile.location}</p>
-                    )}
+                    {profile.location && <p className="text-xs text-gray-500 mt-0.5">{profile.location}</p>}
                     <p className="text-xs text-gray-400">{t("DoctorBD Member", "DoctorBD সদস্য")}</p>
                   </div>
                 </div>
@@ -148,53 +137,79 @@ export default function BottomNav() {
             </div>
 
             {/* Account section */}
-            <div className="py-2">
-              <p className="px-5 pt-2 pb-1 text-xs font-bold text-gray-900">
-                {t("Account", "অ্যাকাউন্ট")}
-              </p>
-              <button
-                onClick={() => { close(); router.push("/profile?edit=true"); }}
-                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-              >
+            <div className="py-1">
+              <p className="px-5 pt-3 pb-1 text-xs font-bold text-gray-900">{t("Account", "অ্যাকাউন্ট")}</p>
+              <button onClick={() => { close(); router.push("/profile?edit=true"); }} className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                 {t("Settings & Privacy", "সেটিংস ও গোপনীয়তা")}
               </button>
-              <button
-                onClick={() => { toggle(); close(); }}
-                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-              >
-                {t("Language: English", "Language: বাংলা")}
+              <button onClick={() => { toggle(); }} className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                {lang === "en" ? "Language: English" : "Language: বাংলা"}
               </button>
-              <button
-                onClick={() => { close(); router.push("/terms"); }}
-                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-              >
+              <button onClick={() => { close(); router.push("/terms"); }} className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                 {t("Terms & Conditions", "শর্তাবলী")}
               </button>
-              <button
-                onClick={() => { close(); router.push("/privacy"); }}
-                className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-              >
+              <button onClick={() => { close(); router.push("/privacy"); }} className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                 {t("Privacy Policy", "গোপনীয়তা নীতি")}
               </button>
             </div>
 
-            {/* Doctor verification status */}
-            {doctorApp && (
-              <div className="border-t border-gray-100 py-2">
-                <p className="px-5 pt-2 pb-1 text-xs font-bold text-gray-900">
-                  {t("Manage", "পরিচালনা")}
-                </p>
-                <div className="px-5 py-2 flex items-center justify-between">
-                  <span className="text-sm text-gray-600">{t("Doctor Verification", "ডাক্তার যাচাইকরণ")}</span>
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${doctorStatusColor}`}>
-                    {doctorStatusLabel}
+            {/* Manage — admin review panel */}
+            <div className="border-t border-gray-100 py-1">
+              <div className="px-5 pt-3 pb-2 flex items-center justify-between">
+                <p className="text-xs font-bold text-gray-900">{t("Manage", "পরিচালনা")}</p>
+                {pendingCount > 0 && (
+                  <span className="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full">
+                    {pendingCount} {t("pending", "বাকি")}
                   </span>
-                </div>
+                )}
               </div>
-            )}
+
+              {pendingCount > 0 ? (
+                <div className="mx-4 mb-3 bg-amber-50 border border-amber-100 rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                      <ClipboardList size={15} className="text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{t("Doctor Applications", "ডাক্তার আবেদন")}</p>
+                      <p className="text-xs text-amber-600">{pendingCount} {t("awaiting your review", "আপনার পর্যালোচনার অপেক্ষায়")}</p>
+                    </div>
+                  </div>
+
+                  {/* Preview names */}
+                  <div className="flex flex-col gap-1.5 mb-3 pl-1">
+                    {pendingDocs.slice(0, 3).map((doc) => (
+                      <div key={doc.appId} className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                        <span className="text-sm text-gray-700">{doc.nameEn}</span>
+                      </div>
+                    ))}
+                    {pendingCount > 3 && (
+                      <p className="text-xs text-gray-400 pl-3.5">+{pendingCount - 3} {t("more", "আরো")}</p>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => { close(); router.push("/admin/doctors"); }}
+                    className="w-full flex items-center justify-center gap-1.5 text-sm font-semibold text-[#0066CC] border border-[#0066CC] rounded-xl py-2.5 hover:bg-blue-50 transition-colors"
+                  >
+                    {t("Review all applications", "সব আবেদন পর্যালোচনা করুন")}
+                    <ChevronRight size={15} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => { close(); router.push("/admin/doctors"); }}
+                  className="w-full flex items-center justify-between px-5 py-2.5 text-sm text-gray-400 hover:bg-gray-50 transition-colors"
+                >
+                  <span>{t("Doctor Applications", "ডাক্তার আবেদন")}</span>
+                  <span className="text-xs bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full">{t("0 pending", "০ বাকি")}</span>
+                </button>
+              )}
+            </div>
 
             {/* Sign out */}
-            <div className="border-t border-gray-100 py-2">
+            <div className="border-t border-gray-100 py-1">
               <button
                 onClick={() => { logout(); router.push("/"); close(); }}
                 className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
