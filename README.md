@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DoctorBD — Find the Right Doctor in Bangladesh
+
+A bilingual (English / Bengali) web app for finding qualified doctors across all divisions and districts of Bangladesh.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+src/
+├── app/
+│   ├── page.tsx               # Home / landing page
+│   ├── doctors/
+│   │   ├── page.tsx           # Doctor listing with filters
+│   │   └── [id]/page.tsx      # Doctor detail / profile page
+│   ├── specialties/page.tsx   # Browse specialties
+│   ├── category/[slug]/page.tsx
+│   ├── about/page.tsx
+│   └── profile/page.tsx       # User profile page (new)
+├── components/
+│   ├── Navbar.tsx             # Top navigation bar
+│   ├── BottomNav.tsx          # Mobile bottom app bar (new)
+│   ├── DoctorCard.tsx
+│   ├── CategoryCard.tsx
+│   └── Footer.tsx
+├── context/
+│   └── LanguageContext.tsx    # EN / BN language toggle
+└── data/
+    ├── doctors.ts             # 20 doctors with full bilingual data
+    ├── categories.ts          # Medical specialties
+    └── locations.ts           # Divisions, districts, upazilas
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Existing
+- Browse and filter doctors by specialty, division, district, fee range, and availability
+- Doctor detail page with qualifications, ratings, about, when-to-see, contact & fee
+- 12 medical specialties with category pages
+- Full English / Bengali toggle across all content
 
-## Deploy on Vercel
+### Added in `rajibraju/profile`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Mobile Bottom Navigation
+- Replaced the hamburger menu with a fixed bottom app bar (Home, Doctors, Specialties, Profile)
+- Active tab highlighted with bold icon and blue color
+- Footer hidden on mobile — bottom nav handles all navigation
+- Desktop navbar unchanged
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### User Profile Page (`/profile`)
+- **Profile card** — avatar with initials, name, location, basic info tags (blood group, age, phone), conditions row with a `Conditions:` label to separate them visually, appointment stats (total, saved doctors, cancelled), member since + Edit Profile button at the bottom
+- **Edit Profile modal** — editable fields: name, age, blood group, division, district, phone, conditions (add with Enter / remove with ×). Changes saved to `localStorage` and reflected immediately
+- **Appointment History** — compact card list (same style as Saved Doctors / Recently Visited), shows 3 entries by default with a "View more / Show less" toggle. Each row links to the doctor profile
+- **Recently Visited** — tracks which doctor detail pages the user visits (stored in `localStorage`, up to 6). Section only appears after the first visit
+- **Saved Doctors** — static list of bookmarked doctors with specialty, availability, and rating
+- **Preferred Specialties** — pill tags linking to category pages
+- **Spend Summary** (sidebar) — total spend across completed appointments, visit count, average per visit
+
+#### Doctor Detail Page
+- Automatically saves each visited doctor to `localStorage` (`recently_visited`) on page load, which feeds the Recently Visited section in the profile
+
+---
+
+## Data & Persistence
+
+All user data (profile edits, recently visited doctors) is stored in `localStorage` under these keys:
+
+| Key | Contents |
+|---|---|
+| `profile_data` | Serialised profile object (name, age, blood group, location, phone, conditions) |
+| `recently_visited` | Array of doctor IDs in visit order, max 6 |
+
+No backend or auth — this is a client-side only app.
+
+---
+
+## Tech Stack
+
+- **Next.js** (App Router)
+- **Tailwind CSS**
+- **Lucide React** icons
+- **Hind Siliguri** font (Bengali + Latin)

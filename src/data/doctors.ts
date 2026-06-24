@@ -17,6 +17,7 @@ export interface Doctor {
   rating: number;
   reviewCount: number;
   available: boolean;
+  verified: boolean;
   whenToSeeEn: string[];
   whenToSeeBn: string[];
   aboutEn: string;
@@ -43,6 +44,7 @@ export const doctors: Doctor[] = [
     rating: 4.8,
     reviewCount: 312,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Chest pain or pressure",
       "Shortness of breath",
@@ -83,6 +85,7 @@ export const doctors: Doctor[] = [
     rating: 4.7,
     reviewCount: 425,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Irregular menstrual cycle",
       "Pregnancy care and checkups",
@@ -123,6 +126,7 @@ export const doctors: Doctor[] = [
     rating: 4.6,
     reviewCount: 198,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Severe or recurring headaches",
       "Dizziness and balance problems",
@@ -163,6 +167,7 @@ export const doctors: Doctor[] = [
     rating: 4.9,
     reviewCount: 567,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Fever in infants and children",
       "Childhood vaccinations",
@@ -203,6 +208,7 @@ export const doctors: Doctor[] = [
     rating: 4.5,
     reviewCount: 234,
     available: true,
+    verified: false,
     whenToSeeEn: [
       "Acne and skin breakouts",
       "Eczema or psoriasis",
@@ -243,6 +249,7 @@ export const doctors: Doctor[] = [
     rating: 4.4,
     reviewCount: 189,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "General fever and infections",
       "Diabetes management",
@@ -283,6 +290,7 @@ export const doctors: Doctor[] = [
     rating: 4.7,
     reviewCount: 276,
     available: false,
+    verified: true,
     whenToSeeEn: [
       "Bone fractures or breaks",
       "Joint pain and arthritis",
@@ -323,6 +331,7 @@ export const doctors: Doctor[] = [
     rating: 4.6,
     reviewCount: 143,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Stomach pain or cramps",
       "Acid reflux or heartburn",
@@ -363,6 +372,7 @@ export const doctors: Doctor[] = [
     rating: 4.5,
     reviewCount: 167,
     available: true,
+    verified: false,
     whenToSeeEn: [
       "Ear pain or hearing loss",
       "Sinus problems",
@@ -403,6 +413,7 @@ export const doctors: Doctor[] = [
     rating: 4.8,
     reviewCount: 389,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Blurry or deteriorating vision",
       "Eye pain or redness",
@@ -443,6 +454,7 @@ export const doctors: Doctor[] = [
     rating: 4.7,
     reviewCount: 221,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Depression or persistent sadness",
       "Anxiety and panic attacks",
@@ -483,6 +495,7 @@ export const doctors: Doctor[] = [
     rating: 4.6,
     reviewCount: 154,
     available: false,
+    verified: false,
     whenToSeeEn: [
       "Chronic kidney disease",
       "Blood or protein in urine",
@@ -523,6 +536,7 @@ export const doctors: Doctor[] = [
     rating: 4.4,
     reviewCount: 198,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Acne and skin breakouts",
       "Eczema or psoriasis",
@@ -561,6 +575,7 @@ export const doctors: Doctor[] = [
     rating: 4.9,
     reviewCount: 445,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Chest pain or pressure",
       "Shortness of breath",
@@ -597,6 +612,7 @@ export const doctors: Doctor[] = [
     rating: 4.5,
     reviewCount: 132,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Fever in children",
       "Childhood vaccinations",
@@ -633,6 +649,7 @@ export const doctors: Doctor[] = [
     rating: 4.3,
     reviewCount: 267,
     available: true,
+    verified: false,
     whenToSeeEn: [
       "General fever",
       "Diabetes management",
@@ -669,6 +686,7 @@ export const doctors: Doctor[] = [
     rating: 4.6,
     reviewCount: 178,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Pregnancy care",
       "Menstrual issues",
@@ -705,6 +723,7 @@ export const doctors: Doctor[] = [
     rating: 4.5,
     reviewCount: 142,
     available: true,
+    verified: false,
     whenToSeeEn: [
       "Severe headaches",
       "Memory problems",
@@ -741,6 +760,7 @@ export const doctors: Doctor[] = [
     rating: 4.5,
     reviewCount: 119,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Vision problems",
       "Eye infections",
@@ -777,6 +797,7 @@ export const doctors: Doctor[] = [
     rating: 4.8,
     reviewCount: 298,
     available: true,
+    verified: true,
     whenToSeeEn: [
       "Stomach disorders",
       "Liver problems",
