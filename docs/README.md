@@ -1,5 +1,11 @@
-# DoctorBD — PRD Index
+# DoctorBD — Documentation Index
 
+## Execution Plan
+| Document | Description |
+|---|---|
+| [EXECUTION-PLAN.md](./EXECUTION-PLAN.md) | Full 0→1 plan: documentation, design, database, frontend, QA, deployment |
+
+## Product Requirements (PRDs)
 | # | Document | Page | Status |
 |---|---|---|---|
 | 01 | [Login & Sign Up](./PRD-01-login-signup.md) | /auth | Draft |
