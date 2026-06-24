@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { LogIn, ChevronDown, ClipboardList } from "lucide-react";
+import { LogIn, ChevronDown, ClipboardList, User, Stethoscope } from "lucide-react";
 
 type ProfileSnap = { name: string; initials: string; location: string };
 type PendingDoc = { appId: string; nameEn: string };
@@ -16,9 +16,11 @@ export default function Navbar() {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
   const [profile, setProfile] = useState<ProfileSnap>({ name: "", initials: "U", location: "" });
   const [pendingDocs, setPendingDocs] = useState<PendingDoc[]>([]);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const signInRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -47,6 +49,15 @@ export default function Navbar() {
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, [open]);
+
+  useEffect(() => {
+    if (!signInOpen) return;
+    const handle = (e: MouseEvent) => {
+      if (signInRef.current && !signInRef.current.contains(e.target as Node)) setSignInOpen(false);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [signInOpen]);
 
   const close = () => setOpen(false);
   const pendingCount = pendingDocs.length;
@@ -235,17 +246,56 @@ export default function Navbar() {
               </div>
             ) : (
               <>
-                <Link
-                  href="/auth"
-                  className={`hidden md:flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
-                    pathname === "/auth"
-                      ? "bg-[#0066CC] text-white"
-                      : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
-                  }`}
-                >
-                  <LogIn size={14} />
-                  {t("Sign In", "সাইন ইন")}
-                </Link>
+                {/* Sign In dropdown */}
+                <div className="relative hidden md:block" ref={signInRef}>
+                  <button
+                    onClick={() => setSignInOpen((v) => !v)}
+                    className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors ${
+                      pathname === "/auth"
+                        ? "bg-[#0066CC] text-white"
+                        : "border border-gray-200 text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC]"
+                    }`}
+                  >
+                    <LogIn size={14} />
+                    {t("Sign In", "সাইন ইন")}
+                    <ChevronDown size={12} className={`transition-transform duration-200 ${signInOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {signInOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-xl z-[100] overflow-hidden py-1.5">
+                      <p className="px-4 pt-1.5 pb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                        {t("Sign in as", "সাইন ইন করুন")}
+                      </p>
+                      <Link
+                        href="/auth?role=patient"
+                        onClick={() => setSignInOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-[#0066CC] transition-colors"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                          <User size={14} className="text-[#0066CC]" />
+                        </div>
+                        <div>
+                          <p className="font-medium leading-none">{t("Patient", "রোগী")}</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">{t("Find doctors", "ডাক্তার খুঁজুন")}</p>
+                        </div>
+                      </Link>
+                      <Link
+                        href="/auth?role=doctor"
+                        onClick={() => setSignInOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-[#00A86B] transition-colors"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                          <Stethoscope size={14} className="text-[#00A86B]" />
+                        </div>
+                        <div>
+                          <p className="font-medium leading-none">{t("Doctor", "ডাক্তার")}</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">{t("List your practice", "প্র্যাকটিস যোগ করুন")}</p>
+                        </div>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
                 <button
                   onClick={toggle}
                   className="hidden md:block text-sm font-medium px-3 py-1.5 border border-gray-200 rounded-md text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC] transition-colors"
