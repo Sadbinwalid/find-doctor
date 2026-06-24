@@ -34,6 +34,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("user_authenticated");
     localStorage.removeItem("user_onboarded");
     localStorage.removeItem("profile_data");
+    localStorage.removeItem("recently_visited");
+    localStorage.removeItem("pending_doctor_registrations");
     setIsAuthenticated(false);
   }, []);
 

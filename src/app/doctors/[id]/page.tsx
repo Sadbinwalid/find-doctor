@@ -16,10 +16,12 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
 
   useEffect(() => {
     if (!id) return;
-    const stored = localStorage.getItem("recently_visited");
-    const prev: string[] = stored ? JSON.parse(stored) : [];
-    const updated = [id, ...prev.filter((v) => v !== id)].slice(0, 6);
-    localStorage.setItem("recently_visited", JSON.stringify(updated));
+    try {
+      const stored = localStorage.getItem("recently_visited");
+      const prev: string[] = stored ? JSON.parse(stored) : [];
+      const updated = [id, ...prev.filter((v) => v !== id)].slice(0, 6);
+      localStorage.setItem("recently_visited", JSON.stringify(updated));
+    } catch { /* ignore malformed data */ }
   }, [id]);
 
   if (!doctor) notFound();

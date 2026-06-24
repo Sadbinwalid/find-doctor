@@ -31,8 +31,8 @@ export default function AuthPage() {
   const [district, setDistrict] = useState("");
 
   useEffect(() => {
-    if (isAuthenticated) router.replace("/profile");
-  }, [isAuthenticated, router]);
+    if (isAuthenticated && step !== "done") router.replace("/profile");
+  }, [isAuthenticated, step, router]);
 
   const districts = division
     ? (locations.find((l) => l.division === division)?.districts ?? [])
