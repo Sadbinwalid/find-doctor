@@ -72,25 +72,30 @@ export default function ProfilePage() {
       router.replace("/auth");
       return;
     }
-    const rv = localStorage.getItem("recently_visited");
-    if (rv) setRecentlyVisited(JSON.parse(rv));
-    const pd = localStorage.getItem("profile_data");
-    if (pd) {
-      const parsed = JSON.parse(pd);
-      setProfile(parsed);
-      setForm(parsed);
-    }
-    // Check if user has submitted a doctor application
-    const apps = localStorage.getItem("pending_doctor_registrations");
-    if (apps) {
-      const list: DoctorApplication[] = JSON.parse(apps);
-      if (list.length > 0) {
-        const latest = list.sort((a, b) =>
-          new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-        )[0];
-        setDoctorApp(latest);
+    try {
+      const rv = localStorage.getItem("recently_visited");
+      if (rv) setRecentlyVisited(JSON.parse(rv));
+    } catch { /* ignore malformed data */ }
+    try {
+      const pd = localStorage.getItem("profile_data");
+      if (pd) {
+        const parsed = JSON.parse(pd);
+        setProfile(parsed);
+        setForm(parsed);
       }
-    }
+    } catch { /* ignore malformed data */ }
+    try {
+      const apps = localStorage.getItem("pending_doctor_registrations");
+      if (apps) {
+        const list: DoctorApplication[] = JSON.parse(apps);
+        if (list.length > 0) {
+          const latest = list.sort((a, b) =>
+            new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+          )[0];
+          setDoctorApp(latest);
+        }
+      }
+    } catch { /* ignore malformed data */ }
     // Auto-open edit modal if navigated with ?edit=true
     const params = new URLSearchParams(window.location.search);
     if (params.get("edit") === "true") {
@@ -435,8 +440,7 @@ export default function ProfilePage() {
                   ? "bg-red-50 border-red-200"
                   : "bg-amber-50 border-amber-200"
               }`}>
-                <p className="text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5
-                  ${doctorApp.status === 'approved' ? 'text-green-700' : doctorApp.status === 'rejected' ? 'text-red-600' : 'text-amber-700'}">
+                <p className={`text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5 ${doctorApp.status === 'approved' ? 'text-green-700' : doctorApp.status === 'rejected' ? 'text-red-600' : 'text-amber-700'}`}>
                   {doctorApp.status === "approved" ? (
                     <BadgeCheck size={13} className="text-green-600" />
                   ) : doctorApp.status === "rejected" ? (

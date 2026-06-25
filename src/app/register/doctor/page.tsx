@@ -316,7 +316,7 @@ export default function DoctorRegisterPage() {
                   <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Division", "বিভাগ")} *</label>
                   <select
                     value={form.division}
-                    onChange={(e) => set("division", e.target.value)}
+                    onChange={(e) => { set("division", e.target.value); set("district", ""); set("upazila", ""); }}
                     className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#0066CC] bg-white"
                   >
                     <option value="">{t("Select", "বেছে নিন")}</option>

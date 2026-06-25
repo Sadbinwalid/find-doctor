@@ -37,8 +37,10 @@ export default function AdminDoctorsPage() {
   const [pending, setPending] = useState<PendingApp[]>([]);
 
   useEffect(() => {
-    const raw = localStorage.getItem("pending_doctor_registrations");
-    if (raw) setPending(JSON.parse(raw));
+    try {
+      const raw = localStorage.getItem("pending_doctor_registrations");
+      if (raw) setPending(JSON.parse(raw));
+    } catch { /* ignore malformed data */ }
   }, [unlocked]);
 
   const tryUnlock = () => {
