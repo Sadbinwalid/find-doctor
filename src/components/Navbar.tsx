@@ -73,10 +73,9 @@ export default function Navbar() {
             <div className="w-9 h-9 bg-gradient-to-br from-[#0066CC] to-[#0052a3] rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
               <Stethoscope size={19} className="text-white" strokeWidth={2} />
             </div>
-            <div>
-              <span className="font-bold text-gray-900 text-[17px] leading-none block tracking-tight">DoctorBD</span>
-              <span className="text-[10px] text-[#0066CC] font-medium leading-none tracking-wide">ডাক্তার বিডি</span>
-            </div>
+            <span className="text-[17px] tracking-tight leading-none">
+              <span className="font-medium text-gray-800">Doctor</span><span className="font-bold text-[#0066CC]">BD</span>
+            </span>
           </Link>
 
           {/* Desktop nav links */}
