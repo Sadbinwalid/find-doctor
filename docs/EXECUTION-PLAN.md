@@ -88,16 +88,20 @@ Total: ~6–8 weeks with one developer working full-time
 
 ### 1.2 Existing Screens to Refine
 - [ ] Homepage: personalised version for logged-in users (show name, recent doctors)
-- [x] Profile page: shows real user data from `localStorage` (no longer shows fake Rajib Raju data for unauthenticated users — auth guard redirects to /auth)
+- [x] Profile page: gradient hero with avatar + inline edit/sign-out; pull-up stats bar; gradient spend summary
 - [ ] Doctor listing cards: add verified badge, add save button
-- [ ] Specialty category page: add safety warning section, fee range, conditions list
+- [x] Specialty category page: gradient hero with specialty icon + doctor/available/verified chips; pull-up when-to-see card
 - [x] About page: rebuilt with hero, stats, icon cards, dual CTA, emergency banner
-- [x] Mobile BottomNav: Specialties tab is present (Home / Doctors / Specialties / Profile)
+- [x] Mobile BottomNav: 5th "More" tab with sign-in (patient / doctor), doctor registration, 🇺🇸 EN / 🇧🇩 BN language toggle
 
 ### 1.3 Design System Check
 - [x] Colour tokens consistent — `#0066CC` (blue/patient), `#00A86B` (green/doctor) applied throughout
 - [x] Typography baseline — 16px body, `font-size: 16px` on all inputs (prevents iOS zoom), Hind Siliguri for Bengali
-- [x] Border-radius consistent — `rounded-2xl` on cards, `rounded-xl` on buttons and inputs
+- [x] Border-radius consistent — `rounded-2xl` now fully applied across all pages (doctor detail, profile, category, specialties, register)
+- [x] Gradient hero system — `from-[#0066CC] to-[#0052a3]` hero strip with `-mt-N` pull-up card on all inner pages (matches homepage)
+- [x] Logo — Stethoscope icon + `Doctor` (medium gray) · `BD` (bold blue) wordmark; Bengali subtitle removed
+- [x] Language toggle — 🇺🇸 EN / 🇧🇩 BN flag pills in navbar, desktop dropdown, and mobile More sheet
+- [x] Language consistency — zero Bengali leakage in English mode (CategoryCard, Doctor detail subtitle, step numbers fixed)
 - [ ] Test all screens at 320px (smallest common mobile), 375px, 768px, 1280px
 
 ---
@@ -283,8 +287,9 @@ unique(user_id, doctor_id)
 - [ ] Add loading skeleton while fetching
 
 ### 3.4 Doctor Detail (/doctors/[id])
+- [x] Redesigned with gradient hero (doctor name, specialty, verified badge, qualifications), pull-up stats bar, icon-led contact card, gradient fee breakdown card
 - [ ] Pull doctor data from /api/doctors/[id]
-- [ ] Add contact section: phone call button + WhatsApp button
+- [ ] Add contact section: WhatsApp button (phone call button already present)
 - [ ] Add save/unsave button (syncs with database)
 - [ ] Track visit via /api/user/visited (replace localStorage)
 - [ ] Add "Share profile" button (copy link to clipboard)
