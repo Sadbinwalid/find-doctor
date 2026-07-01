@@ -62,7 +62,7 @@
 ## Task List (Priority Order)
 
 ### Must Do
-- [ ] Add empty/no-results state with a helpful message and "Clear filters" CTA
+- [x] Empty/no-results state — "No doctors found. Try adjusting your filters." shown when result set is 0
 - [ ] Show verified badge on doctor cards in the listing
 - [ ] Fix max fee slider to start at ৳0 and cap dynamically at dataset max
 - [ ] Check and fix district reset on desktop sidebar division change

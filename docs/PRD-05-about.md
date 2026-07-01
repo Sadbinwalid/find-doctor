@@ -1,56 +1,65 @@
 # PRD 05 — About (/about)
 
+> Last updated: July 2026
+
 ---
 
 ## Features Currently Built
 
 | Feature | Status |
 |---|---|
-| Our Mission section | ✅ Built |
-| What We Offer section | ✅ Built |
-| Emergency Help section (16457 hotline) | ✅ Built |
-| Breadcrumb (Home / About) | ✅ Built |
-| Bilingual | ✅ Built |
+| Blue gradient hero section with headline and subtitle | ✅ Built |
+| Stats bar (1,200+ Doctors / 40+ Specialties / 8 Divisions / 64 Districts) | ✅ Built |
+| Mission card (ShieldCheck icon) | ✅ Built |
+| What We Offer card (MapPin icon) | ✅ Built |
+| For Doctors card (Users icon) | ✅ Built |
+| Emergency Help card (Phone icon) | ✅ Built |
+| Dual CTA buttons — "Find a Doctor" → `/doctors` and "Register as Doctor" → `/register/doctor` | ✅ Built |
+| Emergency helpline banner (16457, red) | ✅ Built |
+| Breadcrumb inside hero (Home / About) | ✅ Built |
+| Bilingual throughout | ✅ Built |
 
 ---
 
-## What's Missing / Needs Checking
+## Design Notes
 
-### Content Gaps
-- [ ] **No team / founder section** — who built this? Trust is critical for a health platform. Even a brief "built by [team/org]" line helps.
-- [ ] **No contact information** — no email, address, or support channel listed. The privacy page references privacy@doctorbd.com but the About page has nothing.
-- [ ] **No "How it works" summary** — About page doesn't link to or explain the verification process. Users who land here don't know how doctor trust is established.
-- [ ] **No social proof** — no testimonials, no press mentions, nothing to build credibility.
-- [ ] **"1,200+ verified doctors" is repeated** here too — inconsistent with the 20 real doctors in the dataset.
-- [ ] **No FAQ section** — common questions like "Is this free?", "How do I book?", "Are doctors verified?" have no home.
+The About page mirrors the visual quality of the rest of the app:
+- Hero uses the same `from-[#0066CC] to-[#0052a3]` gradient as the home page hero
+- Info cards use coloured icon backgrounds (blue, green, purple, red) matching the app's icon system
+- Emergency banner reuses the same red-600 component from the home page
+
+---
+
+## What's Missing / Still To Do
+
+### Content
+- [ ] **No team / founder section** — health platforms need a human face for trust; even a 2-line "built by" attribution helps
+- [ ] **No FAQ section** — common questions ("Is this free?", "How do doctors get verified?", "Can I book appointments?") need a home
+- [ ] **"1,200+ verified doctors" is a demo number** — inconsistent with 20 real doctors; update when real data is present
+- [ ] **No contact email on the page itself** — privacy@doctorbd.com and legal@doctorbd.com exist on Terms/Privacy pages but are not shown here
+
+### Trust / Legal
+- [ ] **No medical disclaimer** — health platforms should clearly state "DoctorBD is a directory, not a medical provider. We do not diagnose or prescribe."
+- [ ] **No "last updated" date**
 
 ### UX
-- [ ] **Page is very short** — 3 cards, minimal content. Looks unfinished compared to the rest of the app.
-- [ ] **No CTA at the bottom** — user reads the about page and then has nowhere to go. Should link to /doctors or /register/doctor.
-- [ ] **Emergency section is buried** at the bottom — emergency info should arguably be at the top or in a sticky component.
-- [ ] **Not linked from BottomNav on mobile** — About is only reachable via the desktop Navbar. Mobile users may never find it.
-
-### Trust & Legal
-- [ ] **No disclaimer** — health platform needs a clear "We are not a medical provider, we do not offer diagnosis or treatment" legal disclaimer.
-- [ ] **No date** — no "last updated" on the about page.
+- [ ] **Not linked from mobile BottomNav** — About is only reachable via the desktop Navbar; mobile users may not find it
 
 ---
 
-## Task List (Priority Order)
+## Task List
 
 ### Must Do
-- [ ] Add medical disclaimer ("DoctorBD is a directory, not a medical provider. We do not diagnose or prescribe.")
+- [ ] Add medical disclaimer ("We are not a medical provider, we do not diagnose or prescribe")
 - [ ] Add contact email / support channel
-- [ ] Add CTA at bottom of page (links to /doctors and /verify)
-- [ ] Fix "1,200+ doctors" claim to match real data or add "growing" qualifier
+- [ ] Update "1,200+" stat once real doctor data is in
 
 ### Should Do
-- [ ] Add team/founder section (even 2–3 lines builds trust)
+- [ ] Add team/founder section (even 2–3 lines)
 - [ ] Add FAQ section (5–6 common questions)
-- [ ] Add link to /verify page explaining how doctor trust works
-- [ ] Make About page accessible from mobile BottomNav or Footer
+- [ ] Link to `/verify` explaining how the trust badge works
 
 ### Nice to Have
-- [ ] Social proof section (even placeholder "Join 500+ users" style)
-- [ ] Link to social media accounts
-- [ ] Press/media mention section
+- [ ] Social proof section ("Join [N]+ patients already using DoctorBD")
+- [ ] Press/media mention area
+- [ ] Link to social accounts

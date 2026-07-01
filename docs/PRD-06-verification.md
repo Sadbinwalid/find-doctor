@@ -1,6 +1,8 @@
 # PRD 06 — Verification (/verify)
 
-> Note: This page explains the doctor verification process to visitors (both doctors and patients). It is NOT the doctor registration form (/register/doctor) — that's a separate flow.
+> Last updated: July 2026
+
+> **Navigation note**: The Verification page is no longer in the top navbar. It is accessible via the "How it works" button on the Doctor CTA banner on the home page, and via direct link `/verify`. The nav link was removed in the July 2026 UX audit — the page is doctor-facing content and was redundant in the main navigation for general users.
 
 ---
 
@@ -8,55 +10,55 @@
 
 | Feature | Status |
 |---|---|
-| Hero section with verification badge explanation | ✅ Built |
+| Hero section with shield icon and headline | ✅ Built |
 | "What the badge means" info card | ✅ Built |
-| 4-step verification process (Submit → Review → Background Check → Badge) | ✅ Built |
+| 4-step verification process grid (2×2): Submit → Review → Background Check → Badge | ✅ Built |
 | Timeline estimate (3–5 business days) | ✅ Built |
-| Required documents list (4 documents, numbered) | ✅ Built |
-| CTA at bottom → links to /register/doctor | ✅ Built |
+| Required documents list (BMDC certificate, degree, hospital letter, NID) | ✅ Built |
+| CTA → `/register/doctor` | ✅ Built |
 | Bilingual | ✅ Built |
 
 ---
 
-## What's Missing / Needs Checking
+## Discovery Path
 
-### Content
-- [ ] **Patient-facing explanation is missing** — the page is entirely written for doctors ("submit your registration", "get your verified badge"). Patients landing here have no context on what verification means for them as a patient (i.e. why they should trust verified doctors).
-- [ ] **No FAQs** — common doctor questions like "What if my BMDC is being renewed?", "Can I submit documents digitally?" are unanswered.
-- [ ] **Document collection is vague** — "Our team contacts you after registration to collect documents" but no detail on how (email? phone call? upload portal?). This creates confusion and drop-off.
-- [ ] **No appeal process** — what happens if a doctor is rejected? The admin panel has a reject button but the verify page doesn't explain what the doctor should do.
-- [ ] **No status check** — a doctor who has submitted cannot check their application status from this page. They'd have to log in to their profile. This page should acknowledge that and link to the profile.
-- [ ] **"BMDC cross-reference" claim** — the page says "We cross-reference with BMDC's official registry" but this is not actually implemented (it's a mock admin approve/reject). This is a misleading claim that should be softened or removed until real verification exists.
-
-### UX
-- [ ] **CTA only targets new applicants** — "Register as a Doctor" CTA at the bottom has no alternative for doctors who have already submitted ("Check your application status instead").
-- [ ] **2×2 step grid looks good on desktop** but on very small phones (320px) the grid may be too tight — test at minimum viewport.
-- [ ] **No anchor links** — the page is long enough that linking directly to "Required Documents" section from external pages would be useful.
-- [ ] **Page not linked from doctor profile page** — when a doctor sees the "Verified" badge on a profile, there's no link explaining what that means.
-- [ ] **Verified badge shown as text description only** — the actual badge visual (blue ShieldCheck) is not shown on this page so patients/doctors don't know what to look for.
-
-### Trust
-- [ ] **No real legal / compliance references** — for a health platform in Bangladesh, referencing BMDC (Bangladesh Medical & Dental Council) officially and linking to it would strongly increase trust.
-- [ ] **No timeline for renewal** — are verifications permanent? Do they expire? Not addressed.
+The page is reachable via:
+1. Home page → Doctor CTA banner → "How it works" button
+2. Direct URL `/verify`
+3. Profile page → verification status card (for doctors who have submitted)
 
 ---
 
-## Task List (Priority Order)
+## What's Missing / Still To Do
+
+### Content
+- [ ] **Patient-facing section missing** — the page is written entirely for doctors. Patients who see a "Verified" badge and click through to learn more have no explanation of what it means for them.
+- [ ] **BMDC cross-reference claim should be softened** — the page states "We cross-reference with BMDC's official registry" but this is not yet implemented (admin approves/rejects manually). Should say "We review BMDC registration details" until real cross-referencing is in place.
+- [ ] **No FAQ** — common doctor questions like "What if my BMDC is being renewed?", "How do you collect documents?", "What happens if I'm rejected?" are unanswered
+- [ ] **No rejection/appeal process explained** — admin panel has a reject button but the doctor has no path described for what to do next
+- [ ] **No status check link** — a doctor who has already submitted cannot find their application status from this page; should link to `/profile`
+
+### UX
+- [ ] **CTA only targets new applicants** — add "Already applied? Check your status →" link to `/profile` alongside the "Register Now" button
+- [ ] **The actual verified badge visual is not shown** — the page describes the badge but doesn't show the blue ShieldCheck icon, so users don't know what to look for in the directory
+- [ ] **No anchor links** — long enough page that `#required-documents` anchor would be useful for external linking
+
+---
+
+## Task List
 
 ### Must Do
-- [ ] Add patient-facing section: "What this means for you as a patient" (1–2 sentences explaining why verified badge = trustworthy)
-- [ ] Soften or remove "We cross-reference with BMDC registry" claim until it's actually implemented
-- [ ] Add "Already applied? Check your status →" link that points to /profile
-- [ ] Show the actual verified badge visual on the page so users know what to look for
+- [ ] Add "Already applied? Check your status →" link to `/profile`
+- [ ] Soften BMDC cross-reference claim to "We review BMDC registration details"
+- [ ] Show the actual verified badge visual (blue ShieldCheck + "Verified by DoctorBD")
+- [ ] Add a 1–2 sentence patient-facing explanation of what the badge means for them
 
 ### Should Do
-- [ ] Add FAQ section (5 questions minimum — one for doctors, one for patients)
-- [ ] Clarify document submission method ("our team will email you within 24 hours of registration")
-- [ ] Add rejection/appeal guidance
-- [ ] Link verified badge on /doctors/[id] page back to this /verify page
+- [ ] Add FAQ section (at least 3 questions for doctors, 1 for patients)
+- [ ] Clarify document collection method ("our team will email you within 24 hours")
+- [ ] Add rejection / next-steps guidance
 
 ### Nice to Have
-- [ ] Add BMDC official link for reference/trust
-- [ ] Add anchor link to #required-documents for external linking
-- [ ] Add renewal/expiry information
-- [ ] Add a "What happens at each step" expandable accordion
+- [ ] Official BMDC website link for reference
+- [ ] `#required-documents` anchor link
+- [ ] Expandable accordion for each verification step

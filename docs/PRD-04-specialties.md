@@ -1,5 +1,7 @@
 # PRD 04 — Specialties (/specialties + /category/[slug])
 
+> Last updated: July 2026
+
 ---
 
 ## Features Currently Built
@@ -7,63 +9,58 @@
 ### /specialties (listing page)
 | Feature | Status |
 |---|---|
-| Grid of all specialty cards | ✅ Built |
-| Each card shows name, description, doctor count | ✅ Built |
-| Colour-coded icons per specialty | ✅ Built |
+| Grid of all 12 specialty cards (1-col mobile, 2-col tablet, 3-col desktop) | ✅ Built |
+| Each card shows Lucide icon, name, description, doctor count | ✅ Built |
+| Icons match the iconMap used on the home page CategoryCard grid | ✅ Built |
+| Colour-coded icon backgrounds per specialty | ✅ Built |
 | Breadcrumb (Home / Specialties) | ✅ Built |
-| Links to individual category page | ✅ Built |
-| Bilingual | ✅ Built |
+| Links to individual `/category/[slug]` page | ✅ Built |
+| Bilingual throughout | ✅ Built |
 
 ### /category/[slug] (individual specialty page)
 | Feature | Status |
 |---|---|
-| Specialty header with colour, name, description | ✅ Built |
-| "When to see this doctor" section | ✅ Built |
-| Doctor list filtered by that specialty | ✅ Built |
-| Link back to all specialties | ✅ Built |
-| Bilingual | ✅ Built |
+| Specialty header with colour, Lucide icon, name, description | ✅ Built |
+| "When to see this doctor" info box | ✅ Built |
+| Doctor list filtered by specialty | ✅ Built |
+| Empty state when no doctors match the specialty | ✅ Built |
+| `notFound()` for invalid slug (404 page) | ✅ Built |
+| Back link → `/specialties` | ✅ Built |
+| Breadcrumb (Home / Specialties / [Specialty]) | ✅ Built |
+| Bilingual throughout | ✅ Built |
 
 ---
 
-## What's Missing / Needs Checking
+## What's Missing / Still To Do
 
 ### /specialties listing
-- [ ] **No search on the specialties page** — with 12 categories it's fine, but at 40+ it becomes hard to scan.
-- [ ] **Doctor count is live from data** — currently accurate (e.g. "3 doctors") but the count will look low since only 20 demo doctors exist. Consider hiding count or framing as "3 verified doctors" until real data grows.
-- [ ] **No sorting** — alphabetical would help users find what they need faster.
-- [ ] **Icons are just the first letter of the specialty name** (e.g. "C" for Cardiologist) — not meaningful. Should use actual icons (already have Lucide available).
-- [ ] **BottomNav has no direct link to Specialties** on mobile — users on mobile can only reach this page from the homepage "View all" link (which is hidden on mobile) or from category cards.
-- [ ] **No empty state** — if a specialty slug doesn't exist, the page crashes or 404s without a friendly message.
+- [ ] **Doctor count looks low** — showing "2 doctors" or "1 doctor" because only 20 demo doctors exist; consider hiding count until real data is in
+- [ ] **No search on the page** — fine at 12 specialties, needed if count grows to 40+
+- [ ] **No alphabetical sort option**
 
 ### /category/[slug]
-- [ ] **Invalid slug shows blank page** — no notFound() call, no fallback UI. Navigating to /category/fake crashes silently.
-- [ ] **"When to see" text is a single long sentence** — could be broken into bullet points for scannability.
-- [ ] **No safety warning** — missing "go to hospital immediately if…" guidance (per product vision).
-- [ ] **No estimated fee range** for the specialty — user has to scroll through doctor cards to guess the cost.
-- [ ] **No conditions treated list** — just "when to see" copy. A list of common conditions this doctor treats would help users confirm they're in the right place.
-- [ ] **Doctor cards on category page don't show verified badge**.
-- [ ] **If no doctors exist for a specialty** (e.g. a future specialty with 0 doctors added), the page shows an empty list with no message.
-- [ ] **No link to /doctors with this specialty pre-filtered** — the page only shows doctors from the static dataset. There's no "See all doctors in this specialty" CTA that goes to /doctors?specialty=X.
+- [ ] **"When to see" is a single paragraph** — would be more scannable as bullet points
+- [ ] **No safety / emergency note** — missing "go to hospital immediately if…" guidance
+- [ ] **No estimated fee range** — user has to scroll through all doctor cards to gauge cost
+- [ ] **No "See all [specialty] doctors" CTA** linking to `/doctors?specialties=[slug]` for broader search
+- [ ] **Verified badge not shown** on doctor cards within category pages (only on detail page)
+- [ ] **No conditions-treated list** per specialty — helps users confirm they're in the right place
 
 ---
 
-## Task List (Priority Order)
+## Task List
 
 ### Must Do
-- [ ] Add notFound() for invalid /category/[slug] routes
-- [ ] Add empty state on category page when no doctors match that specialty
-- [ ] Add real icons to specialty cards (replace first-letter placeholders)
-- [ ] Add "See all [specialty] doctors" link on category page that goes to /doctors?specialties=slug
+- [ ] Add "See all [specialty] doctors →" CTA on category pages → `/doctors?specialties=[slug]`
+- [ ] Break "When to see" text into bullet points
 
 ### Should Do
-- [ ] Break "When to see" text into bullet points
-- [ ] Add estimated fee range to category page (min–max from doctor data)
-- [ ] Add conditions treated list per specialty
-- [ ] Add safety/emergency note ("Go to hospital immediately if…") on category pages
-- [ ] Add Specialties tab to mobile BottomNav or make homepage "View all" visible on mobile
-- [ ] Show verified badge on doctor cards within category pages
+- [ ] Add estimated fee range (min–max from doctor data in that specialty)
+- [ ] Add conditions-treated list per specialty
+- [ ] Add safety/emergency note ("Go to hospital immediately if…")
+- [ ] Show verified badge on doctor cards
 
 ### Nice to Have
-- [ ] Search box on /specialties listing page
-- [ ] Alphabetical sort option on /specialties
-- [ ] Condition-to-specialty mapping (clicking a condition shows which specialists treat it)
+- [ ] Search box on `/specialties` listing
+- [ ] Alphabetical sort
+- [ ] Condition-to-specialty mapping (click a condition → see specialists)
