@@ -228,8 +228,8 @@ export default function AuthPage() {
           {step === "role" && (
             <div>
               <div className="text-center mb-8">
-                <div className="w-12 h-12 bg-[#0066CC] rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-white font-bold text-xl">D</span>
+                <div className="w-12 h-12 bg-gradient-to-br from-[#0066CC] to-[#0052a3] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <Stethoscope size={26} className="text-white" strokeWidth={2} />
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900">
                   {isSignIn ? t("Welcome back", "স্বাগতম") : t("Join DoctorBD", "DoctorBD-তে যোগ দিন")}

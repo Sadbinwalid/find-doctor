@@ -69,13 +69,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#0066CC] rounded-md flex items-center justify-center">
-              <span className="text-white font-bold text-sm">D</span>
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 bg-gradient-to-br from-[#0066CC] to-[#0052a3] rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Stethoscope size={19} className="text-white" strokeWidth={2} />
             </div>
             <div>
-              <span className="font-bold text-gray-900 text-lg leading-none block">DoctorBD</span>
-              <span className="text-xs text-gray-500 leading-none">ডাক্তার বিডি</span>
+              <span className="font-bold text-gray-900 text-[17px] leading-none block tracking-tight">DoctorBD</span>
+              <span className="text-[10px] text-[#0066CC] font-medium leading-none tracking-wide">ডাক্তার বিডি</span>
             </div>
           </Link>
 
