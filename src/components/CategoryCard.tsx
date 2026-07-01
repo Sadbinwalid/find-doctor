@@ -28,25 +28,22 @@ export default function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/category/${category.slug}`}
-      className="group bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200"
+      className="group flex flex-col items-center text-center bg-white border border-gray-100 rounded-2xl p-4 py-5 hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
     >
-      {/* Icon */}
+      {/* Large icon block */}
       <div
-        className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-105"
         style={{ backgroundColor: category.bgColor }}
       >
-        <Icon size={20} style={{ color: category.color }} />
+        <Icon size={28} style={{ color: category.color }} strokeWidth={1.75} />
       </div>
 
-      <h3 className="font-semibold text-gray-900 text-sm leading-tight">
+      {/* Name — primary in bold, secondary smaller */}
+      <p className="text-sm font-bold text-gray-900 leading-snug">
         {t(category.nameEn, category.nameBn)}
-      </h3>
-      <p className="text-xs text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
-        {t(category.descriptionEn, category.descriptionBn)}
       </p>
-
-      <p className="text-xs mt-2 font-medium group-hover:underline" style={{ color: category.color }}>
-        {t("View doctors →", "ডাক্তার দেখুন →")}
+      <p className="text-xs text-gray-400 mt-0.5 leading-snug">
+        {t(category.nameBn, category.nameEn)}
       </p>
     </Link>
   );
