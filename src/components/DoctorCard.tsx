@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Doctor } from "@/data/doctors";
 import { useLanguage } from "@/context/LanguageContext";
-import { MapPin, Star, Stethoscope, Phone, Check } from "lucide-react";
+import { MapPin, Star, Check } from "lucide-react";
 import { categories } from "@/data/categories";
 
 export default function DoctorCard({ doctor }: { doctor: Doctor }) {
@@ -17,97 +17,92 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
     .join("");
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-gray-300 transition-all duration-200 flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex gap-4 items-start">
-        {/* Avatar */}
-        <div className="relative flex-shrink-0">
-          <div
-            className="w-14 h-14 rounded-full flex items-center justify-center text-white font-semibold text-lg"
-            style={{ backgroundColor: category?.color || "#0066CC" }}
-          >
-            {initials}
-          </div>
-          {doctor.verified && (
-            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-[#0066CC] rounded-full flex items-center justify-center border-2 border-white">
-              <Check size={10} className="text-white" strokeWidth={3} />
-            </div>
-          )}
-        </div>
+    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col">
+      {/* Coloured top strip + avatar */}
+      <div className="h-2 w-full" style={{ backgroundColor: category?.color || "#0066CC" }} />
 
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">
-            {t(doctor.nameEn, doctor.nameBn)}
-          </h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {t(doctor.nameBn, doctor.nameEn)}
-          </p>
-
-          {/* Specialty badge */}
-          {category && (
-            <span
-              className="inline-block mt-1.5 text-xs font-medium px-2 py-0.5 rounded-full"
-              style={{ color: category.color, backgroundColor: category.bgColor }}
+      <div className="p-5 flex flex-col gap-4 flex-1">
+        {/* Header row */}
+        <div className="flex items-start gap-4">
+          <div className="relative flex-shrink-0">
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl"
+              style={{ backgroundColor: category?.color || "#0066CC" }}
             >
-              {t(category.nameEn, category.nameBn)}
-            </span>
-          )}
-        </div>
-
-        {/* Availability */}
-        <div className="flex-shrink-0">
-          <span
-            className={`text-xs font-medium px-2 py-1 rounded-full ${
-              doctor.available
-                ? "bg-green-50 text-green-700"
-                : "bg-gray-100 text-gray-500"
-            }`}
-          >
-            {doctor.available ? t("Available", "উপলব্ধ") : t("Unavailable", "অনুপলব্ধ")}
-          </span>
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-start gap-2 text-xs text-gray-600">
-          <Stethoscope size={13} className="mt-0.5 flex-shrink-0 text-gray-400" />
-          <span className="truncate">{t(doctor.hospitalEn, doctor.hospitalBn)}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-gray-600">
-          <MapPin size={13} className="flex-shrink-0 text-gray-400" />
-          <span>{doctor.district}, {doctor.division}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-gray-600">
-          <Phone size={13} className="flex-shrink-0 text-gray-400" />
-          <span>{doctor.phone}</span>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-        <div>
-          <div className="flex items-center gap-1">
-            <Star size={13} className="text-amber-400 fill-amber-400" />
-            <span className="text-sm font-semibold text-gray-900">{doctor.rating}</span>
-            <span className="text-xs text-gray-400">({doctor.reviewCount})</span>
+              {initials}
+            </div>
+            {doctor.verified && (
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#0066CC] rounded-full flex items-center justify-center border-2 border-white">
+                <Check size={11} className="text-white" strokeWidth={3} />
+              </div>
+            )}
           </div>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {doctor.experienceYears} {t("yrs exp.", "বছরের অভিজ্ঞতা")}
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-sm font-bold text-[#0066CC]">৳{doctor.fee}</p>
-          <p className="text-xs text-gray-400">{t("per visit", "প্রতি ভিজিট")}</p>
-        </div>
-      </div>
 
-      <Link
-        href={`/doctors/${doctor.id}`}
-        className="w-full text-center text-sm font-medium py-2 border border-[#0066CC] text-[#0066CC] rounded-lg hover:bg-[#0066CC] hover:text-white transition-colors"
-      >
-        {t("View Profile", "প্রোফাইল দেখুন")}
-      </Link>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <h3 className="font-bold text-gray-900 text-base leading-tight truncate">
+                  {t(doctor.nameEn, doctor.nameBn)}
+                </h3>
+                {category && (
+                  <span
+                    className="inline-block mt-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                    style={{ color: category.color, backgroundColor: category.bgColor }}
+                  >
+                    {t(category.nameEn, category.nameBn)}
+                  </span>
+                )}
+              </div>
+              <span className={`flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${
+                doctor.available ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-400"
+              }`}>
+                {doctor.available ? t("Available", "উপলব্ধ") : t("Unavailable", "অনুপলব্ধ")}
+              </span>
+            </div>
+
+            {/* Rating */}
+            <div className="flex items-center gap-1.5 mt-2">
+              <div className="flex items-center gap-0.5">
+                {[1,2,3,4,5].map((s) => (
+                  <Star
+                    key={s}
+                    size={13}
+                    className={s <= Math.round(doctor.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}
+                  />
+                ))}
+              </div>
+              <span className="text-sm font-semibold text-gray-800">{doctor.rating}</span>
+              <span className="text-xs text-gray-400">({doctor.reviewCount})</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Location */}
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <MapPin size={14} className="text-gray-400 flex-shrink-0" />
+          <span className="truncate">{t(doctor.hospitalEn, doctor.hospitalBn)}, {doctor.district}</span>
+        </div>
+
+        {/* Fee + experience row */}
+        <div className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
+          <div>
+            <p className="text-xs text-gray-400">{t("Consultation fee", "পরামর্শ ফি")}</p>
+            <p className="text-xl font-bold text-[#0066CC]">৳{doctor.fee}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-gray-400">{t("Experience", "অভিজ্ঞতা")}</p>
+            <p className="text-base font-bold text-gray-800">{doctor.experienceYears}+ {t("yrs", "বছর")}</p>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <Link
+          href={`/doctors/${doctor.id}`}
+          className="mt-auto block w-full text-center text-sm font-bold py-3 rounded-xl bg-[#0066CC] text-white hover:bg-blue-700 active:scale-95 transition-all"
+        >
+          {t("View Profile", "প্রোফাইল দেখুন")}
+        </Link>
+      </div>
     </div>
   );
 }

@@ -12,9 +12,27 @@
 }
 
 body {
-  background: #f9fafb;
+  background: #f4f6f9;
   color: var(--foreground);
   font-family: var(--font-hind), "Hind Siliguri", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bengali text needs more line height to breathe */
+:lang(bn), [data-lang="bn"] {
+  line-height: 1.8;
+}
+
+/* All buttons and links: minimum 44px tap target */
+button, a {
+  min-height: 0;
+}
+
+/* Inputs: comfortable text size — prevents iOS zoom-in */
+input, select, textarea {
+  font-size: 16px;
 }
 
 html {
