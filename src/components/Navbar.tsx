@@ -165,8 +165,12 @@ export default function Navbar() {
                       <Link href="/profile?edit=true" onClick={close} className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         {t("Settings & Privacy", "সেটিংস ও গোপনীয়তা")}
                       </Link>
-                      <button onClick={() => { toggle(); close(); }} className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
-                        {t("Language: English", "Language: বাংলা")}
+                      <button onClick={() => { toggle(); close(); }} className="w-full flex items-center justify-between px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                        <span>{t("Language", "ভাষা")}</span>
+                        <div className="flex items-center gap-0.5 border border-gray-200 rounded-lg p-0.5">
+                          <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-semibold transition-colors ${lang === "en" ? "bg-[#0066CC] text-white" : "text-gray-400"}`}>🇺🇸 EN</span>
+                          <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-semibold transition-colors ${lang === "bn" ? "bg-[#0066CC] text-white" : "text-gray-400"}`}>🇧🇩 BN</span>
+                        </div>
                       </button>
                       <Link href="/terms" onClick={close} className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         {t("Terms & Conditions", "শর্তাবলী")}
@@ -296,9 +300,14 @@ export default function Navbar() {
 
                 <button
                   onClick={toggle}
-                  className="hidden md:block text-sm font-medium px-3 py-1.5 border border-gray-200 rounded-md text-gray-600 hover:border-[#0066CC] hover:text-[#0066CC] transition-colors"
+                  className="hidden md:flex items-center gap-0.5 border border-gray-200 rounded-lg p-1 hover:border-[#0066CC] transition-colors"
                 >
-                  {lang === "en" ? "বাং" : "EN"}
+                  <span className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold transition-colors ${lang === "en" ? "bg-[#0066CC] text-white" : "text-gray-400"}`}>
+                    🇺🇸 EN
+                  </span>
+                  <span className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold transition-colors ${lang === "bn" ? "bg-[#0066CC] text-white" : "text-gray-400"}`}>
+                    🇧🇩 BN
+                  </span>
                 </button>
               </>
             )}

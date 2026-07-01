@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Home, Stethoscope, LayoutGrid, UserCircle, LogIn,
   X, ClipboardList, ChevronRight, MoreHorizontal,
-  Globe, User, FileText,
+  User, FileText,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -310,26 +310,36 @@ export default function BottomNav() {
             {/* Language toggle */}
             <div className="border-t border-gray-100 px-4 py-2 pb-4">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 px-1">{t("Language", "ভাষা")}</p>
-              <button
-                onClick={() => { toggle(); closeMore(); }}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition-colors"
-              >
-                <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-                  <Globe size={18} className="text-gray-600" />
-                </div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {lang === "en" ? "English" : "বাংলা"}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {lang === "en" ? "বাংলায় পরিবর্তন করুন" : "Switch to English"}
-                  </p>
-                </div>
-                <div className="ml-auto flex items-center gap-1">
-                  <div className={`px-2 py-0.5 rounded text-xs font-bold transition-colors ${lang === "en" ? "bg-[#0066CC] text-white" : "bg-gray-100 text-gray-400"}`}>EN</div>
-                  <div className={`px-2 py-0.5 rounded text-xs font-bold transition-colors ${lang === "bn" ? "bg-[#0066CC] text-white" : "bg-gray-100 text-gray-400"}`}>বাং</div>
-                </div>
-              </button>
+              <div className="flex items-center gap-2 px-1">
+                <button
+                  onClick={() => { if (lang !== "en") toggle(); closeMore(); }}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-colors ${
+                    lang === "en"
+                      ? "border-[#0066CC] bg-blue-50"
+                      : "border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xl">🇺🇸</span>
+                  <div className="text-left">
+                    <p className={`text-sm font-semibold leading-none ${lang === "en" ? "text-[#0066CC]" : "text-gray-700"}`}>EN</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">English</p>
+                  </div>
+                </button>
+                <button
+                  onClick={() => { if (lang !== "bn") toggle(); closeMore(); }}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-colors ${
+                    lang === "bn"
+                      ? "border-[#0066CC] bg-blue-50"
+                      : "border-gray-200 bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xl">🇧🇩</span>
+                  <div className="text-left">
+                    <p className={`text-sm font-semibold leading-none ${lang === "bn" ? "text-[#0066CC]" : "text-gray-700"}`}>BN</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">বাংলা</p>
+                  </div>
+                </button>
+              </div>
             </div>
 
             <div className="h-6" />
