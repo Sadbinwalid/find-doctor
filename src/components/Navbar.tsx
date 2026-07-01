@@ -86,7 +86,6 @@ export default function Navbar() {
               { href: "/doctors", en: "Find Doctors", bn: "ডাক্তার খুঁজুন" },
               { href: "/specialties", en: "Specialties", bn: "বিশেষজ্ঞতা" },
               { href: "/about", en: "About", bn: "আমাদের সম্পর্কে" },
-              { href: "/verify", en: "Verification", bn: "যাচাইকরণ" },
             ].map((item) => (
               <Link
                 key={item.href}

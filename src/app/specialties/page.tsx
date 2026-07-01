@@ -2,7 +2,24 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { categories } from "@/data/categories";
 import { doctors } from "@/data/doctors";
-import CategoryCard from "@/components/CategoryCard";
+import {
+  Heart, Scan, Brain, Baby, Cross, Bone, Stethoscope, Ear, Eye, SmilePlus, Droplets, Activity,
+} from "lucide-react";
+
+const iconMap: Record<string, React.ElementType> = {
+  cardiologist: Heart,
+  dermatologist: Scan,
+  neurologist: Brain,
+  pediatrician: Baby,
+  gynecologist: Cross,
+  orthopedic: Bone,
+  gastroenterologist: Activity,
+  ent: Ear,
+  ophthalmologist: Eye,
+  psychiatrist: SmilePlus,
+  nephrologist: Droplets,
+  "general-physician": Stethoscope,
+};
 
 export default function SpecialtiesPage() {
   const { t } = useLanguage();
@@ -25,19 +42,18 @@ export default function SpecialtiesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {categories.map((cat) => {
           const count = doctors.filter((d) => d.specialty === cat.slug).length;
+          const Icon = iconMap[cat.slug] || Stethoscope;
           return (
             <a
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-gray-300 transition-all duration-200 flex items-center gap-4"
+              className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-4"
             >
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: cat.bgColor }}
               >
-                <span className="text-xl font-bold" style={{ color: cat.color }}>
-                  {cat.nameEn[0]}
-                </span>
+                <Icon size={26} style={{ color: cat.color }} strokeWidth={1.75} />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-gray-900 text-sm">{t(cat.nameEn, cat.nameBn)}</h3>
