@@ -108,19 +108,25 @@ export default function DoctorRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-[#0066CC] mb-6">
-          <ArrowLeft size={15} />
-          {t("Back to Home", "হোমে ফিরে যান")}
-        </Link>
+    <div className="min-h-screen bg-[#f4f6f9]">
 
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">{t("Register as a Doctor", "ডাক্তার হিসেবে নিবন্ধন করুন")}</h1>
-          <p className="text-sm text-gray-500 mt-1">
+      {/* Hero strip */}
+      <div className="bg-gradient-to-b from-[#0066CC] to-[#0052a3]">
+        <div className="max-w-2xl mx-auto px-4 pt-6 pb-16">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-blue-200 hover:text-white transition-colors mb-6">
+            <ArrowLeft size={15} />
+            {t("Back to Home", "হোমে ফিরে যান")}
+          </Link>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">
+            {t("Register as a Doctor", "ডাক্তার হিসেবে নিবন্ধন করুন")}
+          </h1>
+          <p className="text-blue-200 text-sm mt-1.5">
             {t("Join DoctorBD and connect with patients across Bangladesh.", "DoctorBD-তে যোগ দিন এবং বাংলাদেশ জুড়ে রোগীদের সাথে সংযুক্ত হন।")}
           </p>
         </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 -mt-8 pb-10">
 
         {/* Step indicators */}
         <div className="flex items-center gap-2 mb-6">
@@ -148,7 +154,7 @@ export default function DoctorRegisterPage() {
           })}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white rounded-2xl p-6 shadow-md">
           {/* Step 1: Personal Info */}
           {step === 1 && (
             <div className="flex flex-col gap-4">

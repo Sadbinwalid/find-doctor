@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   MapPin, Phone, Star, Heart, Calendar,
-  ChevronRight, Stethoscope, Clock, CheckCircle, XCircle, History, Pencil, X, Plus, LogOut,
-  FileText, Shield, AlertCircle, BadgeCheck,
+  ChevronRight, Stethoscope, CheckCircle, XCircle, History, Pencil, X, Plus, LogOut,
+  FileText, Shield, AlertCircle, BadgeCheck, Clock,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -49,9 +49,7 @@ type ProfileData = typeof DEFAULT_PROFILE;
 
 function formatDate(dateStr: string, lang: "en" | "bn") {
   const date = new Date(dateStr);
-  if (lang === "bn") {
-    return date.toLocaleDateString("bn-BD", { day: "numeric", month: "short", year: "numeric" });
-  }
+  if (lang === "bn") return date.toLocaleDateString("bn-BD", { day: "numeric", month: "short", year: "numeric" });
   return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
@@ -68,68 +66,41 @@ export default function ProfilePage() {
   const [doctorApp, setDoctorApp] = useState<DoctorApplication | null>(null);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/auth");
-      return;
-    }
+    if (!isLoading && !isAuthenticated) { router.replace("/auth"); return; }
     try {
       const rv = localStorage.getItem("recently_visited");
       if (rv) setRecentlyVisited(JSON.parse(rv));
-    } catch { /* ignore malformed data */ }
+    } catch {}
     try {
       const pd = localStorage.getItem("profile_data");
-      if (pd) {
-        const parsed = JSON.parse(pd);
-        setProfile(parsed);
-        setForm(parsed);
-      }
-    } catch { /* ignore malformed data */ }
+      if (pd) { const p = JSON.parse(pd); setProfile(p); setForm(p); }
+    } catch {}
     try {
       const apps = localStorage.getItem("pending_doctor_registrations");
       if (apps) {
         const list: DoctorApplication[] = JSON.parse(apps);
         if (list.length > 0) {
-          const latest = list.sort((a, b) =>
-            new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-          )[0];
-          setDoctorApp(latest);
+          setDoctorApp(list.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())[0]);
         }
       }
-    } catch { /* ignore malformed data */ }
-    // Auto-open edit modal if navigated with ?edit=true
+    } catch {}
     const params = new URLSearchParams(window.location.search);
-    if (params.get("edit") === "true") {
-      setNewCondition("");
-      setEditing(true);
-    }
+    if (params.get("edit") === "true") { setNewCondition(""); setEditing(true); }
   }, [isLoading, isAuthenticated, router]);
 
-  const openEdit = () => {
-    setForm({ ...profile });
-    setNewCondition("");
-    setEditing(true);
-  };
-
-  const saveEdit = () => {
-    setProfile(form);
-    localStorage.setItem("profile_data", JSON.stringify(form));
-    setEditing(false);
-  };
-
+  const openEdit = () => { setForm({ ...profile }); setNewCondition(""); setEditing(true); };
+  const saveEdit = () => { setProfile(form); localStorage.setItem("profile_data", JSON.stringify(form)); setEditing(false); };
   const addCondition = () => {
     const val = newCondition.trim();
     if (!val || form.conditions.includes(val)) return;
     setForm((f) => ({ ...f, conditions: [...f.conditions, val] }));
     setNewCondition("");
   };
-
-  const removeCondition = (c: string) => {
-    setForm((f) => ({ ...f, conditions: f.conditions.filter((x) => x !== c) }));
-  };
+  const removeCondition = (c: string) => setForm((f) => ({ ...f, conditions: f.conditions.filter((x) => x !== c) }));
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#f4f6f9] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-gray-200 border-t-[#0066CC] rounded-full animate-spin" />
       </div>
     );
@@ -137,108 +108,99 @@ export default function ProfilePage() {
 
   const savedDoctors = doctors.filter((d) => SAVED_DOCTOR_IDS.includes(d.id));
   const preferredCategories = categories.filter((c) => PREFERRED_SPECIALTIES.includes(c.slug));
-  const recentDoctors = recentlyVisited
-    .map((id) => doctors.find((d) => d.id === id))
-    .filter(Boolean) as typeof doctors;
-
+  const recentDoctors = recentlyVisited.map((id) => doctors.find((d) => d.id === id)).filter(Boolean) as typeof doctors;
   const completedAppts = APPOINTMENTS.filter((a) => a.status === "completed");
   const cancelledCount = APPOINTMENTS.filter((a) => a.status === "cancelled").length;
-  const totalSpent = completedAppts.reduce((sum, a) => {
-    const doc = doctors.find((d) => d.id === a.doctorId);
-    return sum + (doc?.fee ?? 0);
-  }, 0);
+  const totalSpent = completedAppts.reduce((sum, a) => sum + (doctors.find((d) => d.id === a.doctorId)?.fee ?? 0), 0);
   const visibleAppts = showAllAppts ? APPOINTMENTS : APPOINTMENTS.slice(0, 3);
   const initials = profile.nameEn.split(" ").slice(0, 2).map((w) => w[0]).join("");
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="bg-[#f4f6f9] min-h-screen">
 
-        {/* Profile Header */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-5">
-          <div className="flex items-start gap-5">
-            <div className="w-20 h-20 rounded-full bg-[#0066CC] flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">
+      {/* ── Hero strip ── */}
+      <div className="bg-gradient-to-b from-[#0066CC] to-[#0052a3]">
+        <div className="max-w-4xl mx-auto px-4 pt-6 pb-24">
+          <div className="flex items-start gap-4">
+            <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 ring-2 ring-white/20">
               {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-gray-900">{profile.nameEn}</h1>
-              <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-500">
+              <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">{profile.nameEn}</h1>
+              <div className="flex items-center gap-1.5 mt-1 text-sm text-blue-200">
                 <MapPin size={13} />
                 <span>{profile.districtEn}, {profile.divisionEn}</span>
               </div>
-              {/* Basic info tags */}
               <div className="flex flex-wrap gap-2 mt-3">
-                <span className="text-xs bg-red-50 text-red-600 font-semibold px-2.5 py-1 rounded-full">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-400/25 text-red-100 border border-red-400/20">
                   {t("Blood", "রক্ত")} {profile.bloodGroup}
                 </span>
-                <span className="text-xs bg-blue-50 text-[#0066CC] px-2.5 py-1 rounded-full">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/15 text-white">
                   {t(`Age ${profile.age}`, `বয়স ${profile.age}`)}
                 </span>
-                <div className="flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
-                  <Phone size={11} />
-                  <span>{profile.phone}</span>
-                </div>
+                <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-white/15 text-white">
+                  <Phone size={11} /> {profile.phone}
+                </span>
               </div>
-              {/* Conditions row */}
-              {profile.conditions.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <span className="text-xs text-gray-400 font-medium">{t("Conditions:", "অবস্থা:")}</span>
-                  {profile.conditions.map((c) => (
-                    <span key={c} className="text-xs bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full">
-                      {c}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-5 border-t border-gray-100">
-            <div className="text-center">
-              <p className="font-bold text-gray-900">{APPOINTMENTS.length}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{t("Appointments", "অ্যাপয়েন্টমেন্ট")}</p>
-            </div>
-            <div className="text-center border-x border-gray-100">
-              <p className="font-bold text-[#0066CC]">{savedDoctors.length}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{t("Saved Doctors", "সংরক্ষিত ডাক্তার")}</p>
-            </div>
-            <div className="text-center">
-              <p className="font-bold text-red-500">{cancelledCount}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{t("Cancelled", "বাতিল")}</p>
-            </div>
-          </div>
-
-          {/* Card footer: member since + edit button */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-            <span className="text-xs text-gray-400">
-              {t(`Member since ${profile.memberSince}`, `${profile.memberSince} থেকে সদস্য`)}
-            </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={openEdit}
-                className="flex items-center gap-1.5 text-xs font-medium text-[#0066CC] border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                className="flex items-center gap-1.5 text-xs font-semibold text-white bg-white/20 border border-white/30 px-3 py-2 rounded-xl hover:bg-white/30 transition-colors"
               >
                 <Pencil size={12} />
-                {t("Edit Profile", "প্রোফাইল সম্পাদনা")}
+                {t("Edit", "সম্পাদনা")}
               </button>
               <button
                 onClick={() => { logout(); router.push("/"); }}
-                className="flex items-center gap-1.5 text-xs font-medium text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                className="flex items-center gap-1.5 text-xs font-semibold text-red-200 bg-red-400/20 border border-red-400/20 px-3 py-2 rounded-xl hover:bg-red-400/30 transition-colors"
               >
                 <LogOut size={12} />
-                {t("Sign Out", "সাইন আউট")}
+                {t("Sign Out", "আউট")}
               </button>
+            </div>
+          </div>
+
+          {/* conditions */}
+          {profile.conditions.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 mt-4">
+              <span className="text-xs text-blue-300 font-medium">{t("Conditions:", "অবস্থা:")}</span>
+              {profile.conditions.map((c) => (
+                <span key={c} className="text-xs bg-amber-400/20 text-amber-200 border border-amber-400/20 px-2.5 py-0.5 rounded-full">{c}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Pull-up content ── */}
+      <div className="max-w-4xl mx-auto px-4 -mt-12 pb-10">
+
+        {/* Stats card */}
+        <div className="bg-white rounded-2xl shadow-md mb-5 overflow-hidden">
+          <div className="grid grid-cols-3 divide-x divide-gray-100">
+            <div className="py-5 px-4 text-center">
+              <p className="font-bold text-gray-900 text-lg">{APPOINTMENTS.length}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{t("Appointments", "অ্যাপয়েন্টমেন্ট")}</p>
+            </div>
+            <div className="py-5 px-4 text-center">
+              <p className="font-bold text-[#0066CC] text-lg">{savedDoctors.length}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{t("Saved Doctors", "সংরক্ষিত ডাক্তার")}</p>
+            </div>
+            <div className="py-5 px-4 text-center">
+              <p className="font-bold text-red-500 text-lg">{cancelledCount}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{t("Cancelled", "বাতিল")}</p>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
           {/* Left column */}
           <div className="md:col-span-2 flex flex-col gap-5">
 
             {/* Appointment History */}
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="bg-white rounded-2xl p-5 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900 flex items-center gap-2">
                   <Calendar size={16} className="text-[#0066CC]" />
@@ -250,16 +212,15 @@ export default function ProfilePage() {
                   const doc = doctors.find((d) => d.id === appt.doctorId);
                   const cat = categories.find((c) => c.slug === doc?.specialty);
                   if (!doc) return null;
-                  const docInitials = doc.nameEn
-                    .split(" ").filter((w) => w !== "Dr.").slice(0, 2).map((w) => w[0]).join("");
+                  const docInitials = doc.nameEn.split(" ").filter((w) => w !== "Dr.").slice(0, 2).map((w) => w[0]).join("");
                   return (
                     <Link
                       key={i}
                       href={`/doctors/${doc.id}`}
-                      className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-[#0066CC] hover:bg-blue-50 transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-[#0066CC] hover:bg-blue-50/50 transition-colors"
                     >
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
                         style={{ backgroundColor: cat?.color || "#0066CC" }}
                       >
                         {docInitials}
@@ -271,13 +232,11 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {appt.status === "completed" ? (
                           <span className="flex items-center gap-1 text-xs font-medium text-[#00A86B] bg-green-50 px-2 py-0.5 rounded-full">
-                            <CheckCircle size={11} />
-                            {t("Done", "সম্পন্ন")}
+                            <CheckCircle size={11} /> {t("Done", "সম্পন্ন")}
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 text-xs font-medium text-red-400 bg-red-50 px-2 py-0.5 rounded-full">
-                            <XCircle size={11} />
-                            {t("Cancelled", "বাতিল")}
+                            <XCircle size={11} /> {t("Cancelled", "বাতিল")}
                           </span>
                         )}
                         {appt.status === "completed" && (
@@ -291,7 +250,7 @@ export default function ProfilePage() {
               {APPOINTMENTS.length > 3 && (
                 <button
                   onClick={() => setShowAllAppts((v) => !v)}
-                  className="mt-3 w-full text-sm text-[#0066CC] font-medium py-2 rounded-lg border border-blue-100 hover:bg-blue-50 transition-colors"
+                  className="mt-3 w-full text-sm text-[#0066CC] font-medium py-2 rounded-xl border border-blue-100 hover:bg-blue-50 transition-colors"
                 >
                   {showAllAppts
                     ? t("Show less", "কম দেখুন")
@@ -302,7 +261,7 @@ export default function ProfilePage() {
 
             {/* Recently Visited */}
             {recentDoctors.length > 0 && (
-              <div className="bg-white border border-gray-200 rounded-xl p-5">
+              <div className="bg-white rounded-2xl p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-semibold text-gray-900 flex items-center gap-2">
                     <History size={16} className="text-gray-500" />
@@ -315,16 +274,15 @@ export default function ProfilePage() {
                 <div className="flex flex-col gap-2">
                   {recentDoctors.map((doc) => {
                     const cat = categories.find((c) => c.slug === doc.specialty);
-                    const docInitials = doc.nameEn
-                      .split(" ").filter((w) => w !== "Dr.").slice(0, 2).map((w) => w[0]).join("");
+                    const docInitials = doc.nameEn.split(" ").filter((w) => w !== "Dr.").slice(0, 2).map((w) => w[0]).join("");
                     return (
                       <Link
                         key={doc.id}
                         href={`/doctors/${doc.id}`}
-                        className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-[#0066CC] hover:bg-blue-50 transition-colors"
+                        className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-[#0066CC] hover:bg-blue-50/50 transition-colors"
                       >
                         <div
-                          className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
+                          className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
                           style={{ backgroundColor: cat?.color || "#0066CC" }}
                         >
                           {docInitials}
@@ -345,7 +303,7 @@ export default function ProfilePage() {
             )}
 
             {/* Saved Doctors */}
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="bg-white rounded-2xl p-5 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900 flex items-center gap-2">
                   <Heart size={16} className="text-red-500" />
@@ -358,16 +316,15 @@ export default function ProfilePage() {
               <div className="flex flex-col gap-2">
                 {savedDoctors.map((doc) => {
                   const cat = categories.find((c) => c.slug === doc.specialty);
-                  const docInitials = doc.nameEn
-                    .split(" ").filter((w) => w !== "Dr.").slice(0, 2).map((w) => w[0]).join("");
+                  const docInitials = doc.nameEn.split(" ").filter((w) => w !== "Dr.").slice(0, 2).map((w) => w[0]).join("");
                   return (
                     <Link
                       key={doc.id}
                       href={`/doctors/${doc.id}`}
-                      className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-[#0066CC] hover:bg-blue-50 transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-[#0066CC] hover:bg-blue-50/50 transition-colors"
                     >
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-semibold text-xs flex-shrink-0"
                         style={{ backgroundColor: cat?.color || "#0066CC" }}
                       >
                         {docInitials}
@@ -392,7 +349,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Preferred Specialties */}
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="bg-white rounded-2xl p-5 shadow-sm">
               <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Stethoscope size={16} className="text-[#0066CC]" />
                 {t("Preferred Specialties", "পছন্দের বিশেষজ্ঞতা")}
@@ -402,7 +359,7 @@ export default function ProfilePage() {
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
-                    className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors hover:opacity-80"
+                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors hover:opacity-80"
                     style={{ color: cat.color, backgroundColor: cat.bgColor, borderColor: cat.bgColor }}
                   >
                     {t(cat.nameEn, cat.nameBn)}
@@ -416,13 +373,13 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-4">
 
             {/* Spend Summary */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-              <p className="text-xs text-[#0066CC] font-medium flex items-center gap-1.5">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100/60 border border-blue-100 rounded-2xl p-5">
+              <p className="text-xs text-[#0066CC] font-semibold flex items-center gap-1.5">
                 <Clock size={13} />
                 {t("Spend Summary", "খরচের সারসংক্ষেপ")}
               </p>
-              <p className="text-3xl font-bold text-[#0066CC] mt-1">৳{totalSpent.toLocaleString()}</p>
-              <p className="text-xs text-blue-600 mt-0.5">
+              <p className="text-4xl font-bold text-[#0066CC] mt-1">৳{totalSpent.toLocaleString()}</p>
+              <p className="text-xs text-blue-500 mt-0.5">
                 {t(`across ${completedAppts.length} completed visits`, `${completedAppts.length}টি সম্পন্ন ভিজিট`)}
               </p>
               <div className="mt-3 pt-3 border-t border-blue-200 flex justify-between text-xs text-blue-700">
@@ -433,29 +390,25 @@ export default function ProfilePage() {
 
             {/* Doctor Verification Status */}
             {doctorApp && (
-              <div className={`border rounded-xl p-4 ${
-                doctorApp.status === "approved"
-                  ? "bg-green-50 border-green-200"
-                  : doctorApp.status === "rejected"
-                  ? "bg-red-50 border-red-200"
-                  : "bg-amber-50 border-amber-200"
+              <div className={`border rounded-2xl p-4 ${
+                doctorApp.status === "approved" ? "bg-green-50 border-green-200"
+                : doctorApp.status === "rejected" ? "bg-red-50 border-red-200"
+                : "bg-amber-50 border-amber-200"
               }`}>
-                <p className={`text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5 ${doctorApp.status === 'approved' ? 'text-green-700' : doctorApp.status === 'rejected' ? 'text-red-600' : 'text-amber-700'}`}>
-                  {doctorApp.status === "approved" ? (
-                    <BadgeCheck size={13} className="text-green-600" />
-                  ) : doctorApp.status === "rejected" ? (
-                    <XCircle size={13} className="text-red-500" />
-                  ) : (
-                    <AlertCircle size={13} className="text-amber-600" />
-                  )}
+                <p className={`text-xs font-bold uppercase tracking-wide mb-2 flex items-center gap-1.5 ${
+                  doctorApp.status === "approved" ? "text-green-700"
+                  : doctorApp.status === "rejected" ? "text-red-600"
+                  : "text-amber-700"
+                }`}>
+                  {doctorApp.status === "approved" ? <BadgeCheck size={13} className="text-green-600" />
+                  : doctorApp.status === "rejected" ? <XCircle size={13} className="text-red-500" />
+                  : <AlertCircle size={13} className="text-amber-600" />}
                   {t("Doctor Verification", "ডাক্তার যাচাইকরণ")}
                 </p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {doctorApp.status === "approved"
-                    ? t("Application Approved", "আবেদন অনুমোদিত")
-                    : doctorApp.status === "rejected"
-                    ? t("Application Rejected", "আবেদন প্রত্যাখ্যাত")
-                    : t("Under Review", "পর্যালোচনায় রয়েছে")}
+                  {doctorApp.status === "approved" ? t("Application Approved", "আবেদন অনুমোদিত")
+                  : doctorApp.status === "rejected" ? t("Application Rejected", "আবেদন প্রত্যাখ্যাত")
+                  : t("Under Review", "পর্যালোচনায় রয়েছে")}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
                   {t("App ID", "আবেদন আইডি")}: <span className="font-mono font-medium">{doctorApp.appId}</span>
@@ -479,17 +432,12 @@ export default function ProfilePage() {
             )}
 
             {/* Account & Legal */}
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="px-5 pt-4 pb-2">
-                <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {t("Account", "অ্যাকাউন্ট")}
-                </h2>
+                <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t("Account", "অ্যাকাউন্ট")}</h2>
               </div>
               <div className="flex flex-col">
-                <button
-                  onClick={openEdit}
-                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors text-left"
-                >
+                <button onClick={openEdit} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors text-left">
                   <div className="flex items-center gap-3">
                     <Pencil size={15} className="text-gray-400" />
                     <span className="text-sm text-gray-700">{t("Edit Profile", "প্রোফাইল সম্পাদনা")}</span>
@@ -497,10 +445,7 @@ export default function ProfilePage() {
                   <ChevronRight size={14} className="text-gray-300" />
                 </button>
                 <div className="border-t border-gray-100 mx-4" />
-                <Link
-                  href="/doctors"
-                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors"
-                >
+                <Link href="/doctors" className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <Stethoscope size={15} className="text-gray-400" />
                     <span className="text-sm text-gray-700">{t("Find a Doctor", "ডাক্তার খুঁজুন")}</span>
@@ -510,15 +455,10 @@ export default function ProfilePage() {
               </div>
 
               <div className="px-5 pt-4 pb-2 border-t border-gray-100">
-                <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {t("Legal", "আইনি")}
-                </h2>
+                <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t("Legal", "আইনি")}</h2>
               </div>
               <div className="flex flex-col">
-                <Link
-                  href="/terms"
-                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors"
-                >
+                <Link href="/terms" className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <FileText size={15} className="text-gray-400" />
                     <span className="text-sm text-gray-700">{t("Terms & Conditions", "শর্তাবলী")}</span>
@@ -526,10 +466,7 @@ export default function ProfilePage() {
                   <ChevronRight size={14} className="text-gray-300" />
                 </Link>
                 <div className="border-t border-gray-100 mx-4" />
-                <Link
-                  href="/privacy"
-                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors"
-                >
+                <Link href="/privacy" className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <Shield size={15} className="text-gray-400" />
                     <span className="text-sm text-gray-700">{t("Privacy Policy", "গোপনীয়তা নীতি")}</span>
@@ -552,7 +489,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Edit Profile Modal */}
+      {/* ── Edit Profile Modal ── */}
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
@@ -563,116 +500,69 @@ export default function ProfilePage() {
               </button>
             </div>
             <div className="p-5 flex flex-col gap-4">
-
               <div>
                 <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Full Name", "পুরো নাম")}</label>
-                <input
-                  type="text"
-                  value={form.nameEn}
-                  onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC]"
-                />
+                <input type="text" value={form.nameEn} onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0066CC]" />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Age", "বয়স")}</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={120}
-                    value={form.age}
-                    onChange={(e) => setForm((f) => ({ ...f, age: Number(e.target.value) }))}
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC]"
-                  />
+                  <input type="number" min={1} max={120} value={form.age} onChange={(e) => setForm((f) => ({ ...f, age: Number(e.target.value) }))}
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0066CC]" />
                 </div>
                 <div>
                   <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Blood Group", "রক্তের গ্রুপ")}</label>
-                  <select
-                    value={form.bloodGroup}
-                    onChange={(e) => setForm((f) => ({ ...f, bloodGroup: e.target.value }))}
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC] bg-white"
-                  >
-                    {BLOOD_GROUPS.map((bg) => (
-                      <option key={bg} value={bg}>{bg}</option>
-                    ))}
+                  <select value={form.bloodGroup} onChange={(e) => setForm((f) => ({ ...f, bloodGroup: e.target.value }))}
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0066CC] bg-white">
+                    {BLOOD_GROUPS.map((bg) => <option key={bg} value={bg}>{bg}</option>)}
                   </select>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Division", "বিভাগ")}</label>
-                  <input
-                    type="text"
-                    value={form.divisionEn}
-                    onChange={(e) => setForm((f) => ({ ...f, divisionEn: e.target.value }))}
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC]"
-                  />
+                  <input type="text" value={form.divisionEn} onChange={(e) => setForm((f) => ({ ...f, divisionEn: e.target.value }))}
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0066CC]" />
                 </div>
                 <div>
                   <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("District", "জেলা")}</label>
-                  <input
-                    type="text"
-                    value={form.districtEn}
-                    onChange={(e) => setForm((f) => ({ ...f, districtEn: e.target.value }))}
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC]"
-                  />
+                  <input type="text" value={form.districtEn} onChange={(e) => setForm((f) => ({ ...f, districtEn: e.target.value }))}
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0066CC]" />
                 </div>
               </div>
-
               <div>
                 <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Phone", "ফোন")}</label>
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC]"
-                />
+                <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0066CC]" />
               </div>
-
               <div>
                 <label className="text-xs font-medium text-gray-600 mb-1.5 block">{t("Conditions", "অবস্থা")}</label>
                 <div className="flex flex-wrap gap-1.5 mb-2">
                   {form.conditions.map((c) => (
                     <span key={c} className="flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">
                       {c}
-                      <button onClick={() => removeCondition(c)} className="hover:text-red-500">
-                        <X size={11} />
-                      </button>
+                      <button onClick={() => removeCondition(c)} className="hover:text-red-500"><X size={11} /></button>
                     </span>
                   ))}
                 </div>
                 <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder={t("Add condition…", "অবস্থা যোগ করুন…")}
-                    value={newCondition}
-                    onChange={(e) => setNewCondition(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addCondition()}
-                    className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0066CC]"
-                  />
-                  <button
-                    onClick={addCondition}
-                    className="px-3 py-2 rounded-lg bg-blue-50 text-[#0066CC] hover:bg-blue-100 transition-colors"
-                  >
+                  <input type="text" placeholder={t("Add condition…", "অবস্থা যোগ করুন…")} value={newCondition}
+                    onChange={(e) => setNewCondition(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCondition()}
+                    className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#0066CC]" />
+                  <button onClick={addCondition} className="px-3 py-2 rounded-xl bg-blue-50 text-[#0066CC] hover:bg-blue-100 transition-colors">
                     <Plus size={15} />
                   </button>
                 </div>
               </div>
             </div>
-
             <div className="flex gap-3 p-5 border-t border-gray-100">
-              <button
-                onClick={() => setEditing(false)}
-                className="flex-1 text-sm font-medium py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
-              >
+              <button onClick={() => setEditing(false)}
+                className="flex-1 text-sm font-medium py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
                 {t("Cancel", "বাতিল")}
               </button>
-              <button
-                onClick={saveEdit}
-                className="flex-1 text-sm font-medium py-2.5 rounded-xl bg-[#0066CC] text-white hover:bg-blue-700 transition-colors"
-              >
+              <button onClick={saveEdit}
+                className="flex-1 text-sm font-semibold py-2.5 rounded-xl bg-[#0066CC] text-white hover:bg-blue-700 transition-colors">
                 {t("Save Changes", "পরিবর্তন সংরক্ষণ")}
               </button>
             </div>
