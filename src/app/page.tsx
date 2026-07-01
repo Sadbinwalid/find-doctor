@@ -229,30 +229,33 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                step: "১",
+                key: "1",
+                stepEn: "1", stepBn: "১",
                 en: "Choose a specialty",
                 bn: "বিশেষজ্ঞতা বেছে নিন",
                 descEn: "Pick from 40+ specialties based on your health need",
                 descBn: "আপনার স্বাস্থ্য অবস্থার উপর ভিত্তি করে বিশেষজ্ঞ বেছে নিন",
               },
               {
-                step: "২",
+                key: "2",
+                stepEn: "2", stepBn: "২",
                 en: "Filter by location",
                 bn: "অবস্থান দিয়ে ফিল্টার করুন",
                 descEn: "Find doctors near your division, district, or upazila",
                 descBn: "আপনার বিভাগ, জেলা বা উপজেলার কাছের ডাক্তার খুঁজুন",
               },
               {
-                step: "৩",
+                key: "3",
+                stepEn: "3", stepBn: "৩",
                 en: "Call the doctor",
                 bn: "ডাক্তারকে ফোন করুন",
                 descEn: "Check fees and qualifications, then call directly",
                 descBn: "ফি ও যোগ্যতা দেখুন, তারপর সরাসরি কল করুন",
               },
             ].map((item) => (
-              <div key={item.step} className="flex gap-4 items-start p-5 bg-gray-50 rounded-2xl">
+              <div key={item.key} className="flex gap-4 items-start p-5 bg-gray-50 rounded-2xl">
                 <div className="w-11 h-11 rounded-xl bg-[#0066CC] text-white font-bold text-lg flex items-center justify-center flex-shrink-0">
-                  {item.step}
+                  {t(item.stepEn, item.stepBn)}
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">{t(item.en, item.bn)}</h3>

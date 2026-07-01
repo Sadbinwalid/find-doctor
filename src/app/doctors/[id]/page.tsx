@@ -9,7 +9,7 @@ import { categories } from "@/data/categories";
 
 export default function DoctorDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const doctor = doctors.find((d) => d.id === id);
 
   const [feeOpen, setFeeOpen] = useState(false);
@@ -105,7 +105,7 @@ export default function DoctorDetailPage({ params }: { params: Promise<{ id: str
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>
                   <h1 className="text-xl font-bold text-gray-900">{t(doctor.nameEn, doctor.nameBn)}</h1>
-                  <p className="text-sm text-gray-500">{t(doctor.nameBn, doctor.nameEn)}</p>
+                  {lang === "bn" && <p className="text-sm text-gray-500">{doctor.nameEn}</p>}
                   {doctor.verified && (
                     <span className="inline-flex items-center gap-1 mt-1.5 bg-blue-50 border border-blue-200 text-[#0066CC] text-xs font-medium px-2.5 py-1 rounded-full">
                       <ShieldCheck size={11} strokeWidth={2.5} />

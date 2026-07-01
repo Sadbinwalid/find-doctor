@@ -38,12 +38,8 @@ export default function CategoryCard({ category }: { category: Category }) {
         <Icon size={28} style={{ color: category.color }} strokeWidth={1.75} />
       </div>
 
-      {/* Name — primary in bold, secondary smaller */}
       <p className="text-sm font-bold text-gray-900 leading-snug">
         {t(category.nameEn, category.nameBn)}
-      </p>
-      <p className="text-xs text-gray-400 mt-0.5 leading-snug">
-        {t(category.nameBn, category.nameEn)}
       </p>
     </Link>
   );
