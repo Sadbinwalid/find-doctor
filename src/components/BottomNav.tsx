@@ -2,7 +2,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Stethoscope, LayoutGrid, UserCircle, LogIn, X, ClipboardList, ChevronRight } from "lucide-react";
+import {
+  Home, Stethoscope, LayoutGrid, UserCircle, LogIn,
+  X, ClipboardList, ChevronRight, MoreHorizontal,
+  Globe, User, FileText,
+} from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -16,6 +20,7 @@ export default function BottomNav() {
   const { isAuthenticated, logout } = useAuth();
 
   const [showSheet, setShowSheet] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const [profile, setProfile] = useState<ProfileSnap>({ name: "", initials: "U", location: "" });
   const [pendingDocs, setPendingDocs] = useState<PendingDoc[]>([]);
 
@@ -39,6 +44,7 @@ export default function BottomNav() {
   }, [showSheet]);
 
   const close = () => setShowSheet(false);
+  const closeMore = () => setShowMore(false);
   const pendingCount = pendingDocs.length;
 
   const staticNavItems = [
@@ -51,6 +57,8 @@ export default function BottomNav() {
     <>
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200">
         <div className="flex items-stretch h-16">
+
+          {/* Static tabs: Home, Doctors, Specialties */}
           {staticNavItems.map(({ href, icon: Icon, en, bn }) => {
             const active = pathname === href || (href !== "/" && pathname.startsWith(href));
             return (
@@ -65,6 +73,7 @@ export default function BottomNav() {
             );
           })}
 
+          {/* 4th tab: Profile (auth) or Sign In (unauth) */}
           {isAuthenticated ? (
             <button
               onClick={() => setShowSheet(true)}
@@ -95,16 +104,24 @@ export default function BottomNav() {
               </span>
             </Link>
           )}
+
+          {/* 5th tab: More */}
+          <button
+            onClick={() => setShowMore(true)}
+            className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors text-gray-400"
+          >
+            <MoreHorizontal size={21} strokeWidth={1.75} />
+            <span className="text-[10px] leading-none">{t("More", "আরো")}</span>
+          </button>
+
         </div>
       </nav>
 
-      {/* Profile bottom sheet */}
+      {/* ── Profile bottom sheet (authenticated) ── */}
       {showSheet && (
         <>
           <div className="fixed inset-0 z-[60] bg-black/40" onClick={close} />
           <div className="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-2xl shadow-2xl">
-
-            {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 bg-gray-200 rounded-full" />
             </div>
@@ -163,7 +180,6 @@ export default function BottomNav() {
                   </span>
                 )}
               </div>
-
               {pendingCount > 0 ? (
                 <div className="mx-4 mb-3 bg-amber-50 border border-amber-100 rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-3">
@@ -175,8 +191,6 @@ export default function BottomNav() {
                       <p className="text-xs text-amber-600">{pendingCount} {t("awaiting your review", "আপনার পর্যালোচনার অপেক্ষায়")}</p>
                     </div>
                   </div>
-
-                  {/* Preview names */}
                   <div className="flex flex-col gap-1.5 mb-3 pl-1">
                     {pendingDocs.slice(0, 3).map((doc) => (
                       <div key={doc.appId} className="flex items-center gap-2">
@@ -188,7 +202,6 @@ export default function BottomNav() {
                       <p className="text-xs text-gray-400 pl-3.5">+{pendingCount - 3} {t("more", "আরো")}</p>
                     )}
                   </div>
-
                   <button
                     onClick={() => { close(); router.push("/admin/doctors"); }}
                     className="w-full flex items-center justify-center gap-1.5 text-sm font-semibold text-[#0066CC] border border-[#0066CC] rounded-xl py-2.5 hover:bg-blue-50 transition-colors"
@@ -215,6 +228,107 @@ export default function BottomNav() {
                 className="w-full text-left px-5 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 {t("Sign out", "সাইন আউট")}
+              </button>
+            </div>
+            <div className="h-6" />
+          </div>
+        </>
+      )}
+
+      {/* ── More bottom sheet ── */}
+      {showMore && (
+        <>
+          <div className="fixed inset-0 z-[60] bg-black/40" onClick={closeMore} />
+          <div className="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-2xl shadow-2xl">
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-gray-200 rounded-full" />
+            </div>
+
+            <div className="px-5 pt-2 pb-2 flex items-center justify-between">
+              <p className="text-sm font-bold text-gray-900">{t("More", "আরো")}</p>
+              <button onClick={closeMore} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
+                <X size={17} />
+              </button>
+            </div>
+
+            {/* Sign In options — only when not authenticated */}
+            {!isAuthenticated && (
+              <div className="px-4 pb-2">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 px-1">
+                  {t("Sign in as", "সাইন ইন করুন")}
+                </p>
+                <Link
+                  href="/auth?role=patient"
+                  onClick={closeMore}
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 transition-colors mb-1"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <User size={18} className="text-[#0066CC]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{t("Patient", "রোগী")}</p>
+                    <p className="text-xs text-gray-500">{t("Find doctors & manage health", "ডাক্তার খুঁজুন ও স্বাস্থ্য পরিচালনা করুন")}</p>
+                  </div>
+                  <ChevronRight size={15} className="text-gray-300 ml-auto" />
+                </Link>
+                <Link
+                  href="/auth?role=doctor"
+                  onClick={closeMore}
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-green-50 transition-colors"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                    <Stethoscope size={18} className="text-[#00A86B]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{t("Doctor", "ডাক্তার")}</p>
+                    <p className="text-xs text-gray-500">{t("List your practice, get verified", "প্র্যাকটিস যোগ করুন, যাচাই পান")}</p>
+                  </div>
+                  <ChevronRight size={15} className="text-gray-300 ml-auto" />
+                </Link>
+              </div>
+            )}
+
+            {/* For Doctors */}
+            <div className={`border-t border-gray-100 px-4 py-2 ${!isAuthenticated ? "" : "pt-3"}`}>
+              {!isAuthenticated && <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 px-1">{t("Doctors", "ডাক্তারদের জন্য")}</p>}
+              <Link
+                href="/register/doctor"
+                onClick={closeMore}
+                className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <FileText size={18} className="text-[#0066CC]" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">{t("Register as a Doctor", "ডাক্তার হিসেবে নিবন্ধন")}</p>
+                  <p className="text-xs text-gray-500">{t("Get verified and list your practice", "যাচাই পান এবং প্র্যাকটিস যোগ করুন")}</p>
+                </div>
+                <ChevronRight size={15} className="text-gray-300 ml-auto" />
+              </Link>
+            </div>
+
+            {/* Language toggle */}
+            <div className="border-t border-gray-100 px-4 py-2 pb-4">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 px-1">{t("Language", "ভাষা")}</p>
+              <button
+                onClick={() => { toggle(); closeMore(); }}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <Globe size={18} className="text-gray-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {lang === "en" ? "English" : "বাংলা"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {lang === "en" ? "বাংলায় পরিবর্তন করুন" : "Switch to English"}
+                  </p>
+                </div>
+                <div className="ml-auto flex items-center gap-1">
+                  <div className={`px-2 py-0.5 rounded text-xs font-bold transition-colors ${lang === "en" ? "bg-[#0066CC] text-white" : "bg-gray-100 text-gray-400"}`}>EN</div>
+                  <div className={`px-2 py-0.5 rounded text-xs font-bold transition-colors ${lang === "bn" ? "bg-[#0066CC] text-white" : "bg-gray-100 text-gray-400"}`}>বাং</div>
+                </div>
               </button>
             </div>
 
