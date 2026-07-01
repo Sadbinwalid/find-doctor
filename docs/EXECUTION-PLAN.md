@@ -1,6 +1,6 @@
 # DoctorBD — Execution Plan (0 → 1)
 
-> Last updated: June 2026
+> Last updated: July 2026
 > Stack: Next.js 16 · React 19 · Tailwind CSS 4 · TypeScript
 > Target: A live, usable product with real doctors, real users, real data
 
@@ -12,7 +12,7 @@ Before the tasks — an honest answer.
 
 **Yes, with one important condition.**
 
-The frontend is 70% production-ready. The UI looks good, the flows exist, the bilingual system works.
+The frontend is 85% production-ready. The UI is well-designed and optimised for low-end Android + 3G users in Bangladesh. Full two-role auth (patient + doctor), bilingual EN/BN, doctor directory, admin panel, and all core pages are built.
 The gap is not design or code — it's **data and backend**.
 
 Right now the entire platform runs on:
@@ -78,7 +78,7 @@ Total: ~6–8 weeks with one developer working full-time
 > Goal: Finalize what every screen looks like before building it. Figma first.
 
 ### 1.1 Missing Screens (not yet designed or built)
-- [ ] Sign In screen (separate from Sign Up — currently missing)
+- [x] Sign In screen — role-aware sign in now bypasses onboarding steps
 - [ ] Forgot Password / Reset Password screen
 - [ ] Doctor profile page: contact/reach section (call, WhatsApp, directions)
 - [ ] Empty states for: no search results, no appointments, no saved doctors, new user profile
@@ -88,16 +88,16 @@ Total: ~6–8 weeks with one developer working full-time
 
 ### 1.2 Existing Screens to Refine
 - [ ] Homepage: personalised version for logged-in users (show name, recent doctors)
-- [ ] Profile page: replace fake Rajib Raju data with real user data structure
+- [x] Profile page: shows real user data from `localStorage` (no longer shows fake Rajib Raju data for unauthenticated users — auth guard redirects to /auth)
 - [ ] Doctor listing cards: add verified badge, add save button
 - [ ] Specialty category page: add safety warning section, fee range, conditions list
-- [ ] About page: add team section, FAQ, disclaimer, CTA
-- [ ] Mobile BottomNav: add Specialties tab (currently missing)
+- [x] About page: rebuilt with hero, stats, icon cards, dual CTA, emergency banner
+- [x] Mobile BottomNav: Specialties tab is present (Home / Doctors / Specialties / Profile)
 
 ### 1.3 Design System Check
-- [ ] Confirm colour tokens are consistent (blue #0066CC, green #00A86B used across all files)
-- [ ] Confirm typography scale is consistent (text-xs through text-2xl usage)
-- [ ] Confirm spacing and border-radius are consistent across cards
+- [x] Colour tokens consistent — `#0066CC` (blue/patient), `#00A86B` (green/doctor) applied throughout
+- [x] Typography baseline — 16px body, `font-size: 16px` on all inputs (prevents iOS zoom), Hind Siliguri for Bengali
+- [x] Border-radius consistent — `rounded-2xl` on cards, `rounded-xl` on buttons and inputs
 - [ ] Test all screens at 320px (smallest common mobile), 375px, 768px, 1280px
 
 ---
@@ -247,21 +247,27 @@ unique(user_id, doctor_id)
 > Goal: Wire every page to real data. Fix all gaps from the PRDs.
 
 ### 3.1 Auth Pages (/auth)
-- [ ] Build real Sign In flow (separate from Sign Up — detects existing account)
+- [x] Two-role selection screen (Patient / Doctor) before auth method
+- [x] Role-aware Sign In — skips onboarding steps for returning users
+- [x] Doctor-specific onboarding (Personal → Professional → Hospital)
+- [x] `?role=patient` / `?role=doctor` URL params skip straight to method step
+- [x] Terms & Privacy links are now clickable (`/terms`, `/privacy`)
+- [x] `autocomplete="one-time-code"` on OTP field
 - [ ] Add "Resend OTP" with 60-second countdown
 - [ ] Add "Forgot Password" step
 - [ ] Add loading states on all buttons (prevent double-tap)
 - [ ] Add proper phone validation (Bangladesh: 01X + 8 digits)
 - [ ] Add proper email format validation
-- [ ] Make Terms & Privacy links clickable (/terms, /privacy)
-- [ ] Add `autocomplete="one-time-code"` to OTP field
 - [ ] Add "Go to Profile" fallback on done screen
 
 ### 3.2 Homepage (/)
+- [x] Modern redesign — gradient hero, stats bar, symptom search, specialty grid, featured doctors, how it works, emergency banner
+- [x] "How it Works" step numbers now language-aware (`t("1","১")` etc.)
+- [x] CategoryCards use Lucide icons, icon-only layout (no description clutter)
+- [x] Doctor CTA banner links to `/verify` ("How it works") and `/register/doctor` ("Register Now")
 - [ ] Wire search to real /api/doctors endpoint
 - [ ] Show personalised hero for logged-in users (name, shortcut to profile)
 - [ ] Hide Doctor CTA banner for logged-in patients
-- [ ] Fix "How it Works" Step 3 copy (remove "contact directly")
 - [ ] Fix stats to show real doctor/specialty counts from database
 - [ ] Change Featured Doctors to pull top-rated from real data
 - [ ] Add "Show more" toggle on symptom chips (show 12, expand to all 25)
@@ -284,14 +290,14 @@ unique(user_id, doctor_id)
 - [ ] Add "Share profile" button (copy link to clipboard)
 
 ### 3.5 Specialties (/specialties + /category/[slug])
-- [ ] Replace first-letter icons with real Lucide icons per specialty
-- [ ] Add notFound() for invalid /category/[slug]
-- [ ] Add empty state when no doctors in a specialty
+- [x] Replace first-letter icons with real Lucide icons per specialty (matches home page iconMap)
+- [x] `notFound()` for invalid `/category/[slug]`
+- [x] Empty state when no doctors in a specialty
+- [x] Specialties tab in mobile BottomNav (Home / Doctors / Specialties / Profile)
 - [ ] Break "When to see" into bullet points
 - [ ] Add safety/emergency note per specialty
 - [ ] Add fee range (min–max from real data)
 - [ ] Add "See all [specialty] doctors →" link to /doctors?specialties=slug
-- [ ] Add Specialties to mobile BottomNav
 
 ### 3.6 Profile (/profile)
 - [ ] Pull real user data from /api/user/profile (replace DEFAULT_PROFILE constant)
@@ -302,13 +308,17 @@ unique(user_id, doctor_id)
 - [ ] Fix spend summary to show ৳0 / "No completed visits yet" for new users
 
 ### 3.7 About (/about)
+- [x] Rebuilt with gradient hero, stats bar, icon-led info cards (Mission, Offer, For Doctors, Emergency)
+- [x] Dual CTA — "Find a Doctor" + "Register as Doctor"
+- [x] Emergency banner (matches home page)
 - [ ] Add medical disclaimer section
-- [ ] Add contact email
+- [ ] Add contact email on the page itself
 - [ ] Add FAQ (5–6 questions)
-- [ ] Add CTA at bottom
 - [ ] Fix doctor count to match real data
+- [ ] Add team/founder section
 
 ### 3.8 Verification (/verify)
+- [x] Page removed from navbar — now accessed via Doctor CTA banner "How it works" link
 - [ ] Remove/soften "BMDC cross-reference" claim
 - [ ] Add patient-facing explanation of what the badge means
 - [ ] Show actual badge visual on the page
